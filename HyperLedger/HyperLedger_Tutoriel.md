@@ -12,13 +12,15 @@
  ```curl -sSL https://bit.ly/2ysbOFE | bash -s```
 > Il est possible que la commande suivante ne fonctionne pas sur Windows. Si c'est le cas exécuter directement le fichier scriptHyperLedger.sh situé dans le dossier script.
 > /!\ Si docker n'a pas été installer la commande précédente et le script ne téléchargeront pas les images dockers. Donc veuillez vérifier que Docker a bien été préalablement installé et qu'il fonctionne.
-> Il se peut que les dossier bin et config n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants :
+> Il se peut que les dossier bin et config n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants
+>
 > Pour Windows :
-> https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-windows-amd64-1.4.9.tar.gz
-> https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-windows-amd64-2.2.1.tar.gz
+> - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-windows-amd64-1.4.9.tar.gz
+> - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-windows-amd64-2.2.1.tar.gz
+>
 > Pour Linux :
-> https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-linux-amd64-1.4.9.tar.gz
-> https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-linux-amd64-2.2.1.tar.gz
+> - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-linux-amd64-1.4.9.tar.gz
+> - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-linux-amd64-2.2.1.tar.gz
 
 Les commandes situés dans le bin peuvent être ajouté au PATH pour faciliter les choses.
 ```export PATH=<path to download location>/bin:$PATH```
