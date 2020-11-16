@@ -15,12 +15,12 @@
 > Il se peut que les dossier bin et config n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants
 >
 > Pour Windows :
-> - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-windows-amd64-1.4.9.tar.gz
 > - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-windows-amd64-2.2.1.tar.gz
+> - https://github.com/hyperledger/fabric-ca/releases/download/v1.4.9/hyperledger-fabric-ca-windows-amd64-1.4.9.tar.gz
 >
 > Pour Linux :
-> - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-linux-amd64-1.4.9.tar.gz
 > - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-linux-amd64-2.2.1.tar.gz
+> - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-ca-linux-amd64-1.4.9.tar.gz
 
 Les commandes situés dans le bin peuvent être ajouté au PATH pour faciliter les choses.
 ```export PATH=<path to download location>/bin:$PATH```
