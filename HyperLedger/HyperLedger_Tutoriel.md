@@ -32,7 +32,8 @@ Avant d'exécuter les fichiers s'assurer que l'anti-virus est désactivé.
  ```./network.sh down```
  Puis on lance le réseau :
  ```./network.sh up```
- A la suite de cette commande 3 noeuds sont créés ils peuvent être vus avec la commande ```docker ps -a```. Dont 2 pairs ([peer]) chacun gérés par une organisation et un *[orderer]* qui s'occupe de gérer le réseau.
+
+ A la suite de cette commande, 3 noeuds sont créés ils peuvent être vus avec la commande ```docker ps -a```. Dont 2 pairs ([peer]) chacun gérés par une organisation et un *[orderer]* qui s'occupe de gérer le réseau.
  Pour créer un channel entre Org1 et Org2, lancez ```./network.sh createChannel```
  puis ```./network.sh createChannel -c channel2``` pour lancer un deuxième channel avec un nom personnalisé. Par défaut ça sera mychannel.
  > La commande ```./network.sh up createChannel``` permet de lancer le réseau et de créer un channel.
