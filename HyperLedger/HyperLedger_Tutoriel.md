@@ -2,7 +2,7 @@
 
 ## Pré-requis
   - Git
-  - Curl ( /!\Sur windows l'installation de curl est plus complexe /!\ )
+  - Curl ( :warning: Sur windows l'installation de curl est plus complexe :warning: )
   - Docker et Docker Compose
   - Go
 
@@ -11,8 +11,8 @@
 ### Installation des Samples, Binaries, and Docker Images
  Afin d'installer hyperledger, tapez la commande suivante:
  ```curl -sSL https://bit.ly/2ysbOFE | bash -s```  
-> Il est possible que la commande suivante ne fonctionne pas sur Windows. Si c'est le cas exécuter directement le fichier scriptHyperLedger.sh situé dans le dossier script.  
-> /!\ Si docker n'a pas été installer la commande précédente et le script ne téléchargeront pas les images dockers. Donc veuillez vérifier que Docker a bien été préalablement installé et qu'il fonctionne.  
+> Il est possible que la commande suivante ne fonctionne pas sur Windows. Si c'est le cas exécuter directement le fichier scriptHyperLedger.sh situé dans le dossier script. Sinon téléchargez le projet sur le lien suivant https://github.com/hyperledger/fabric-samples.     
+> :warning: Si docker n'a pas été installer la commande précédente et le script ne téléchargeront pas les images dockers. Donc veuillez vérifier que Docker a bien été préalablement installé et qu'il fonctionne. :warning:  
 > Il se peut que les dossier bin et config n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants  
 >
 > Pour Windows :  
@@ -88,6 +88,22 @@ On va maintenant se mettre à la place de Org2 en changeant les variables d'envi
 Une fois après mis en tant que Org2, en lançant `peer chaincode query -C mychannel -n basic -c '{"Args":["ReadAsset","asset6"]}'`, on peut voir que propriétaire de asset6 est bien Christopher et donc que la transaction a bien été changée chez toutes les organisations.  
 
 En exécutant la commande `./network.sh down`, on éteint le réseau et on supprime tous ce qu'on a pu faire dessus.
+
+## Première application
+
+On repart d'un projet vierge. Exécutez à nouveau le fichier *script.sh* et allez dans le dossier *fabric-samples/test-network* pour exécuter la commande:  
+`./network.sh up createChannel -c mychannel -ca`  
+`./network.sh deployCC -ccn basic -ccl go` On déploie le chaincode en langage go  
+> Vous pouvez lancer `docker logs -f ca_org1` dans un autre terminal afin d'aggicher les logs du Certificate Authorities. Si la commande ne marche pas c'est qu'il y a eu une erreur à une étape précédente.  
+
+La commande `go run assetTransfer.go` situé dans *fabric-samples/asset-transfer-basic/application-go* permet de générer les identifiants de l'administrateur à partir du certificat créé précedemment et qui seront stockés dans le *wallet* du même dossier.  
+>Il se peut que programme ne se lance pas à cause de chemin d'accès introuvable. Si c'est le cas alors que le chemin d'accès existe voici plusieurs solutions:  
+> - Recommencer un travail vierge si cela n'avait pas encore été fait en éteignant le réseau et en supprimant tous les dossiers pour ensuite les retélécharger en suivant les étapes précédentes.  
+> - Si le fichier indiqué dans l'erreur du programme existe et qu'il a un nom très long alors renommez le fichier en un nom plus court(ex:key_sk) (Ce problème n'est survenu que sur Windows, à confirmer pour les autres OS).  
+> - Si le fichier n'existe pas mais que vous avez un fichier du même type au même endroit mais d'un nom différent, renommez-le. Normalement vous devriez le renommer cert.pem (:warning: Cette solution est peu conseillée. Ne l'utiliser uniquement que si les autres solutions n'ont pas fonctionné. :warning:)  
+
+Une fois que c'est fini tu peux fermer le réseau avec `./network.sh down`  
+
 
 [Channel]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#channel
 [Chaincode]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#chaincode
