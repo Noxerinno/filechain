@@ -106,7 +106,9 @@ Une fois que c'est fini tu peux fermer le réseau avec `./network.sh down
 
 ## Setup du réseau
 
-Les fichiers *configtx.yaml* et *crypto-config.yaml* permettent de configurer les ressources du réseau (telles que les organisation les peers et orderers...) afin de générer leur certificat et fichiers associés en utilisant le script *script_crypto.sh*
+Les fichiers *configtx.yaml* et *crypto-config.yaml* permettent de configurer les ressources du réseau (telles que les organisation les peers et orderers...) afin de générer leur certificat et fichiers associés en utilisant le script *script_crypto.sh*  
+
+Pour lancer le réśeau on utilise le fichier *script.sh* (ou *script_alternate.sh*) mais pour le moment ne passe pas l'étape de création d'un channel
 
 
 [Channel]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#channel
