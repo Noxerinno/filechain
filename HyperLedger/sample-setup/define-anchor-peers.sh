@@ -5,7 +5,7 @@
 #Defines anchor peers for each organization
 
 set -e
-export CHANNEL_NAME=channel
+export CHANNEL_NAME=mychannel
 export ORDERER_NAME=orderer0.org1.example.com
 export ORG_NAME=org1.example.com
 export PEER_NAME=peer0

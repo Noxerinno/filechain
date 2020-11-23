@@ -5,7 +5,7 @@
 #Join peers to channel
 
 set -e
-export CHANNEL_NAME=channel
+export CHANNEL_NAME=mychannel
 export PEER_NAME=peer0
 export ORG_NAME=org1.example.com
 export MSPID="Org1MSP"
