@@ -73,8 +73,6 @@ Souvent les smarts contracts doivent être écrit dans un langage comme Solidity
 
 ## Autres technos en permissioned platforms
 Tendermint, Chain, and Quorum.
-# ToDo
-- Vérfiier qu'il est possible d'initialiser un daemon IPFS sans qu'il ne cherche à se connecter aux noeuds externes à l'entreprise
 
 
 # Source

@@ -67,7 +67,7 @@ sudo apt-get -y upgrade
 
 # téléchargement de Go
 wget https://dl.google.com/go/go1.15.4.linux-amd64.tar.gz
-sudo tar -xvf go1.11.4.linux-amd64.tar.gz
+sudo tar -xvf go1.15.4.linux-amd64.tar.gz
 sudo mv go /usr/local
 
 # ajouter les variables d'environnement
@@ -264,7 +264,10 @@ vi config #puis coller le contenu
 sh init-node.sh
 ```
 
-
+# TODO-list
+- add systemctl au .bashrc
+- ip address dynamic
+- Check avant d'écrire sur .bashrc pour éviter les doubles variables
 
 # Sources
 - [Tutoriel sur la mise en place d'un réseau IPFS privé](https://labs.eleks.com/2019/03/ipfs-network-data-replication.html)
