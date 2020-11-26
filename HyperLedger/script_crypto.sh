@@ -6,14 +6,22 @@ export PATH=$GOPATH/src/github.com/hyperledger/fabric/build/bin:${PWD}/../bin:${
 export FABRIC_CFG_PATH=${PWD}
 CHANNEL_NAME=mychannel
 # remove previous crypto material and config transactions
+if [ -d "./config/" ]; then
 rm -fr config/*
+fi
+if [ -d "./crypto-config/" ]; then
 rm -fr crypto-config/*
+fi
 # generate crypto material
 echo "Generate crypto material"
 cryptogen generate --config=./crypto-config.yaml
 if [ "$?" -ne 0 ]; then
 echo "Failed to generate crypto material..."
 exit 1
+fi
+if [ -d "./channel-artifacts/" ]; then
+echo "deleting old ./channel-artifacts/ folder"
+rm -rf ./channel-artifacts
 fi
 mkdir channel-artifacts
 # generate genesis block for orderer
