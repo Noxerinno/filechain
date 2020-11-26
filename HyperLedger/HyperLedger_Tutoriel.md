@@ -102,7 +102,13 @@ La commande `go run assetTransfer.go` situé dans *fabric-samples/asset-transfer
 > - Si le fichier indiqué dans l'erreur du programme existe et qu'il a un nom très long alors renommez le fichier en un nom plus court(ex:key_sk) (Ce problème n'est survenu que sur Windows, à confirmer pour les autres OS).  
 > - Si le fichier n'existe pas mais que vous avez un fichier du même type au même endroit mais d'un nom différent, renommez-le. Normalement vous devriez le renommer cert.pem (:warning: Cette solution est peu conseillée. Ne l'utiliser uniquement que si les autres solutions n'ont pas fonctionné. :warning:)  
 
-Une fois que c'est fini tu peux fermer le réseau avec `./network.sh down`  
+Une fois que c'est fini tu peux fermer le réseau avec `./network.sh down
+
+## Setup du réseau
+
+Les fichiers *configtx.yaml* et *crypto-config.yaml* permettent de configurer les ressources du réseau (telles que les organisation les peers et orderers...) afin de générer leur certificat et fichiers associés en utilisant le script *script_crypto.sh*  
+
+Pour lancer le réśeau on utilise le fichier *script.sh* (ou *script_alternate.sh*) mais pour le moment ne passe pas l'étape de création d'un channel
 
 
 [Channel]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#channel

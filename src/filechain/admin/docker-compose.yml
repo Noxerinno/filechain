@@ -1,0 +1,26 @@
+version: '3'
+services: 
+  ipfs:
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - ipfs_data:/data/ipfs
+    restart: always
+    ports:
+      - "4001:4001"
+      - "0.0.0.0:5001:5001"
+    
+  ipfs-cluster:
+    depends_on: 
+      - ipfs
+    image: ipfs/ipfs-cluster
+    volumes: 
+      - ipfs-cluster_data:/data/ipfs-cluster
+    restart: always
+    ports:
+      - "9094:9094"
+      - "9095:9095"
+      - "9096:9096"
+
+volumes: 
+  ipfs_data: {}
+  ipfs-cluster_data: {}
