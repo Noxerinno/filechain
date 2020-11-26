@@ -1,6 +1,8 @@
 all :
 	docker-compose up -d 
-	python3 init.py
+	# python3 init.py
+	chmod u+x ./init.sh
+	./init.sh
 
 restart :
 	docker-compose stop
@@ -8,4 +10,6 @@ restart :
 
 clean :
 	docker-compose down
+	docker volume rm admin_ipfs_data
+	docker volume rm admin_ipfs-cluster_data 
 	docker system prune
