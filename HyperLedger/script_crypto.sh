@@ -25,7 +25,7 @@ exit 1
 fi
 # generate channel configuration transaction
 echo "Generate channel configuration transaction"
-configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID $CHANNEL_NAME
+configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/mychannel.tx -channelID $CHANNEL_NAME
 if [ "$?" -ne 0 ]; then
 echo "Failed to generate channel configuration transaction..."
 exit 1

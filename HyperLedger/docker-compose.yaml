@@ -85,6 +85,8 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/peers/orderer0.org1.example.com/msp:/var/hyperledger/orderer/msp
       - ./crypto-config/peerOrganizations/org1.example.com/peers/orderer0.org1.example.com/tls/:/var/hyperledger/orderer/tls
       - orderer0.org1.example.com:/var/hyperledger/production/orderer
+    networks:
+      - basic
     ports:
       - 7050:7050
 
@@ -112,6 +114,8 @@ services:
       - ./crypto-config/peerOrganizations/org2.example.com/peers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
       - ./crypto-config/peerOrganizations/org2.example.com/peers/orderer0.org2.example.com/tls/:/var/hyperledger/orderer/tls
       - orderer0.org2.example.com:/var/hyperledger/production/orderer
+    networks:
+      - basic
     ports:
       - 8050:7050
 
@@ -143,6 +147,8 @@ services:
         - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
         - ./channel-artifacts:/etc/hyperledger/configtx
         - peer0.org1.example.com:/var/hyperledger/production
+    networks:
+      - basic
     ports:
       - 7051:7051
       - 7053:7053
@@ -174,6 +180,8 @@ services:
         - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
         - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
         - peer0.org2.example.com:/var/hyperledger/production
+    networks:
+      - basic
     ports:
       - 8051:7051
       - 8053:7053
