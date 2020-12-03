@@ -4,8 +4,8 @@ CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 echo $CLUSTER_SECRET
 docker-compose up -d
 
-IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
-IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
+IPFS_CONT_ID=$(docker ps -aqf "name=client_ipfs_1")
+IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=client_ipfs-cluster_1")
 
 echo $IPFS_CONT_ID 
 sleep 3
@@ -16,7 +16,7 @@ docker exec -it $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-
 # generate swarm file
 ./bin/ipfs-swarm-key-gen > swarm.key
 echo "Key generated and stored in swarm.key"
-docker cp ./swarm.key admin_ipfs_1:/data/ipfs/
+docker cp ./swarm.key client_ipfs_1:/data/ipfs/
 
 # set bootstrap to admin node only
 docker exec -it $IPFS_CONT_ID ipfs bootstrap rm --all
