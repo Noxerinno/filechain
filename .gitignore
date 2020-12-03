@@ -1,1 +1,2 @@
-/src/filechain/admin/compose/*
+src/filechain/admin/compose
+src/filechain/admin/swarm.key

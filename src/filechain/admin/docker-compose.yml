@@ -6,6 +6,8 @@ services:
       # - ./compose/data/ipfs:/data/ipfs
       - ipfs_data:/data/ipfs
     restart: always
+    environment:
+      - LIBP2P_FORCE_PNET=1
     ports:
       - "4001:4001"
       - "5001:5001"
@@ -19,12 +21,12 @@ services:
       - ipfs-cluster_data
     restart: always
     environment: 
-      CLUSTER_PEERNAME: admin
-      CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
-      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
-      CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
-      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
-      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+      - CLUSTER_PEERNAME=admin
+      # - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs0/tcp/5001
+      # - CLUSTER_CRDT_TRUSTEDPEERS=* # Trust all peers in Cluster
+      # - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
+      # - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
+      # - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
     ports:
       - "127.0.0.1:9094:9094"
       - "9095:9095"
