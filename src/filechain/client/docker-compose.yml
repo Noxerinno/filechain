@@ -1,7 +1,9 @@
 version: '3'
 
 networks:
-    basic:
+    outside:
+       external:
+            name: admin_basic
 
 services: 
   ipfs:
@@ -12,7 +14,7 @@ services:
     environment:
       - LIBP2P_FORCE_PNET=1
     networks:
-      - basic
+      - outside
     ports:
       - "4101:4001"
       - "5101:5001"
@@ -32,7 +34,7 @@ services:
       # - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
       # - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
     networks:
-      - basic
+      - outside
     ports:
       - "127.0.0.1:9190:9094"
       - "9195:9095"
