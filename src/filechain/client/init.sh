@@ -6,25 +6,32 @@ docker-compose up -d
 
 IPFS_CONT_ID=$(docker ps -aqf "name=client_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=client_ipfs-cluster_1")
+IPFS_CONT_ID_ADMIN=$(docker ps -aqf "name=admin_ipfs_1")
+IPFS_CLUSTER_CONT_ID_ADMIN=$(docker ps -aqf "name=admin_ipfs-cluster_1")
 
-echo $IPFS_CONT_ID 
+echo $IPFS_CONT_ID
+echo $IPFS_CLUSTER_CONT_ID
+echo $IPFS_CONT_ID_ADMIN
+echo $IPFS_CLUSTER_CONT_ID_ADMIN 
 sleep 3
 docker exec -it $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"http://0.0.0.0:5001\", \"http://localhost:3000\", \"http://127.0.0.1:5001\", \"https://webui.ipfs.io\"]'
 docker exec -it $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\"]'
 
 # Initiate private network
 # generate swarm file
-./bin/ipfs-swarm-key-gen > swarm.key
-echo "Key generated and stored in swarm.key"
-docker cp ./swarm.key client_ipfs_1:/data/ipfs/
+#./bin/ipfs-swarm-key-gen > swarm.key
+#echo "Key generated and stored in swarm.key"
+docker cp ../admin/swarm.key client_ipfs_1:/data/ipfs/
 
 # set bootstrap to admin node only
 docker exec -it $IPFS_CONT_ID ipfs bootstrap rm --all
 
-# NODEID=$(docker exec -it ipfs id | jq '.ID')
-IPADDR=$(docker exec -it $IPFS_CONT_ID ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-NODEID=$(docker exec -it $IPFS_CONT_ID ipfs config --json Identity.PeerID | tr -d '\r')
-docker exec -it $IPFS_CONT_ID ipfs bootstrap add /ip4/"$IPADDR"/tcp/4001/ipfs/$NODEID
+
+IPADDR_ADMIN=$(docker exec -it $IPFS_CONT_ID_ADMIN ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+echo $IPADDR_ADMIN
+NODEID_ADMIN=$(docker exec -it $IPFS_CONT_ID_ADMIN ipfs config --json Identity.PeerID | tr -d '\r')
+echo $NODEID_ADMIN
+docker exec -it $IPFS_CONT_ID ipfs bootstrap add /ip4/"$IPADDR_ADMIN"/tcp/4001/ipfs/$NODEID_ADMIN
 # force private network (TODO: set this value in .bashrc file ?)
 echo "Done with setting private network"
 

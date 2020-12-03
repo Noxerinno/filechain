@@ -7,7 +7,8 @@ docker-compose up -d
 IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
 
-echo $IPFS_CONT_ID 
+echo $IPFS_CONT_ID
+echo $IPFS_CLUSTER_CONT_ID
 sleep 3
 docker exec -it $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"http://0.0.0.0:5001\", \"http://localhost:3000\", \"http://127.0.0.1:5001\", \"https://webui.ipfs.io\"]'
 docker exec -it $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\"]'
@@ -23,7 +24,9 @@ docker exec -it $IPFS_CONT_ID ipfs bootstrap rm --all
 
 # NODEID=$(docker exec -it ipfs id | jq '.ID')
 IPADDR=$(docker exec -it $IPFS_CONT_ID ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+echo $IPADDR
 NODEID=$(docker exec -it $IPFS_CONT_ID ipfs config --json Identity.PeerID | tr -d '\r')
+echo $NODEID
 docker exec -it $IPFS_CONT_ID ipfs bootstrap add /ip4/"$IPADDR"/tcp/4001/ipfs/$NODEID
 # force private network (TODO: set this value in .bashrc file ?)
 echo "Done with setting private network"

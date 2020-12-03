@@ -1,4 +1,8 @@
 version: '3'
+
+networks:
+    basic:
+
 services: 
   ipfs:
     image: ipfs/go-ipfs:latest
@@ -7,9 +11,11 @@ services:
     restart: always
     environment:
       - LIBP2P_FORCE_PNET=1
+    networks:
+      - basic
     ports:
-      - "4001:4001"
-      - "5001:5001"
+      - "4101:4001"
+      - "5101:5001"
     
   ipfs-cluster:
     depends_on: 
@@ -25,10 +31,12 @@ services:
       # - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
       # - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
       # - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
+    networks:
+      - basic
     ports:
-      - "127.0.0.1:9090:9094"
-      - "9095:9095"
-      - "9096:9096"
+      - "127.0.0.1:9190:9094"
+      - "9195:9095"
+      - "9196:9096"
 
 # volumes: 
 #   ipfs_data: {}
