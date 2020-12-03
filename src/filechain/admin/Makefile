@@ -1,5 +1,5 @@
 all :
-	docker-compose up -d 
+	# docker-compose up -d 
 	# python3 init.py
 	chmod u+x ./init.sh
 	./init.sh

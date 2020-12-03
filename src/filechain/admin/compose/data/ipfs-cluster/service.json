@@ -1,7 +1,7 @@
 {
   "cluster": {
-    "peername": "feb8dd59829a",
-    "secret": "a08a945a32d086891aabbb2933204b81beec8aa7206765102df9a9c69ca353dd",
+    "peername": "e184b842bc83",
+    "secret": "42ede76c7769f8dc15fe8a83bfdbf050da9cf83cb835662093abd578c50f458d",
     "leave_on_shutdown": false,
     "listen_multiaddress": [
       "/ip4/0.0.0.0/tcp/9096",
