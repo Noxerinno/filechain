@@ -3,7 +3,8 @@ services:
   ipfs:
     image: ipfs/go-ipfs:latest
     volumes:
-      - ./compose/data/ipfs:/data/ipfs
+      # - ./compose/data/ipfs:/data/ipfs
+      - ipfs_data:/data/ipfs
     restart: always
     environment:
       - LIBP2P_FORCE_PNET=1
@@ -16,11 +17,12 @@ services:
       - ipfs
     image: ipfs/ipfs-cluster
     volumes: 
-      - ./compose/data/ipfs-cluster:/data/ipfs-cluster
+      # - ./compose/data/ipfs-cluster:/data/ipfs-cluster
+      - ipfs-cluster_data
     restart: always
     environment: 
       - CLUSTER_PEERNAME=admin
-    #   - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs0/tcp/5001
+      # - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs0/tcp/5001
       # - CLUSTER_CRDT_TRUSTEDPEERS=* # Trust all peers in Cluster
       # - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
       # - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
@@ -30,6 +32,6 @@ services:
       - "9095:9095"
       - "9096:9096"
 
-# volumes: 
-#   ipfs_data: {}
-#   ipfs-cluster_data: {}
+volumes: 
+  ipfs_data: {}
+  ipfs-cluster_data: {}

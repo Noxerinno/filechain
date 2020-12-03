@@ -73,6 +73,10 @@
 14:56:26.208179 version@stat F·[3] S·3KiB[3KiB] Sc·[0.75]
 14:56:26.214142 db@janitor F·5 G·0
 14:56:26.214284 db@open done T·7.85865ms
+<<<<<<< HEAD
+15:41:41.040356 db@close closing
+15:41:41.040463 db@close done T·105.531µs
+=======
 =============== Nov 26, 2020 (UTC) ===============
 15:22:14.893160 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
 15:22:14.893783 version@stat F·[3] S·3KiB[3KiB] Sc·[0.75]
@@ -882,3 +886,4 @@
 08:01:54.311314 db@open done T·17.58593ms
 08:05:11.171928 db@close closing
 08:05:11.172011 db@close done T·81.409µs
+>>>>>>> 04559f01285c01fcfad01cf41568753e8a3128e0
