@@ -3,7 +3,8 @@ services:
   ipfs:
     image: ipfs/go-ipfs:latest
     volumes:
-      - ./compose/data/ipfs:/data/ipfs
+      # - ./compose/data/ipfs:/data/ipfs
+      - ipfs_data:/data/ipfs
     restart: always
     ports:
       - "4001:4001"
@@ -14,7 +15,8 @@ services:
       - ipfs
     image: ipfs/ipfs-cluster
     volumes: 
-      - ./compose/data/ipfs-cluster:/data/ipfs-cluster
+      # - ./compose/data/ipfs-cluster:/data/ipfs-cluster
+      - ipfs-cluster_data
     restart: always
     environment: 
       CLUSTER_PEERNAME: admin
@@ -28,6 +30,6 @@ services:
       - "9095:9095"
       - "9096:9096"
 
-# volumes: 
-#   ipfs_data: {}
-#   ipfs-cluster_data: {}
+volumes: 
+  ipfs_data: {}
+  ipfs-cluster_data: {}
