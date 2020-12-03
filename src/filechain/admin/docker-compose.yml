@@ -8,6 +8,7 @@ services:
     image: ipfs/go-ipfs:latest
     volumes:
       - ./compose/data/ipfs:/data/ipfs
+      # - ipfs_data:/data/ipfs
     restart: always
     environment:
       - LIBP2P_FORCE_PNET=1
