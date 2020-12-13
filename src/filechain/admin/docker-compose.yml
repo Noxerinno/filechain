@@ -11,6 +11,8 @@ services:
       # - ipfs_data:/data/ipfs
     restart: always
     environment:
+      - IPFS_SWARM_KEY=${SWARMKEY}
+      - SWARM_KEY_PERM=0400
       - LIBP2P_FORCE_PNET=1
     networks:
       - basic
@@ -21,7 +23,7 @@ services:
   ipfs-cluster:
     depends_on: 
       - ipfs
-    image: ipfs/ipfs-cluster
+    image: ipfs/ipfs-cluster:latest
     volumes: 
        - ./compose/data/ipfs-cluster:/data/ipfs-cluster
       #- ipfs-cluster_data
@@ -31,8 +33,8 @@ services:
       # - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs0/tcp/5001
       # - CLUSTER_CRDT_TRUSTEDPEERS=* # Trust all peers in Cluster
       # - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
-      # - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
-      # - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
+      - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
+      - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
     networks:
       - basic
     ports:
