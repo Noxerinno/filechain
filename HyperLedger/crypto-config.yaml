@@ -16,10 +16,14 @@ PeerOrgs:
     Specs:
       - Hostname: orderer0
         CommonName: orderer0.org1.example.com
+        CA:
+          - OrganizationalUnit: admin
         SANS:
           - "localhost"
       - Hostname: peer0
         CommonName: peer0.org1.example.com
+        CA:
+          - OrganizationalUnit: admin
         SANS:
           - "localhost"
     # ---------------------------------------------------------------------------
@@ -71,18 +75,18 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   # Org2
   # ---------------------------------------------------------------------------
-  - Name: Org2
-    Domain: org2.example.com
-    EnableNodeOUs: true
-    Specs:
-      - Hostname: orderer0
-        CommonName: orderer0.org2.example.com
-        SANS:
-          - "localhost"
-      - Hostname: peer0
-        CommonName: peer0.org2.example.com
-        SANS:
-          - "localhost"
+  # - Name: Org2
+  #   Domain: org2.example.com
+  #   EnableNodeOUs: true
+  #   Specs:
+  #     - Hostname: orderer0
+  #       CommonName: orderer0.org2.example.com
+  #       SANS:
+  #         - "localhost"
+  #     - Hostname: peer0
+  #       CommonName: peer0.org2.example.com
+  #       SANS:
+  #         - "localhost"
     # ---------------------------------------------------------------------------
     # "Specs"
     # ---------------------------------------------------------------------------

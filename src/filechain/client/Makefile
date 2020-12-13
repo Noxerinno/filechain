@@ -1,4 +1,4 @@
-all :
+all : clean
 	# docker-compose up -d 
 	# python3 init.py
 	chmod u+x ./init.sh

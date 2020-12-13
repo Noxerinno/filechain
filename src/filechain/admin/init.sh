@@ -42,8 +42,8 @@ echo "Done with setting private network"
 
 echo "Setting service.json"
 docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json ./service.json 
-../mix/bin/jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
-../mix/bin/jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
+jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
+jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
 docker cp ./service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
 rm ./service.json
 
@@ -52,12 +52,12 @@ PEERID=$(cat ./identity.json | jq '.id')
 PEERID=$(echo $PEERID | cut -d '"' -f 2)
 rm ./identity.json
 
-../mix/bin/jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > ../mix/config
-../mix/bin/jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' ../mix/config > tmp && mv tmp ../mix/config
-../mix/bin/jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' ../mix/config > tmp && mv tmp ../mix/config
-../mix/bin/jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' ../mix/config > tmp && mv tmp ../mix/config
-../mix/bin/jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' ../mix/config > tmp && mv tmp ../mix/config
-../mix/bin/jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' ../mix/config > tmp && mv tmp ../mix/config
+jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > ../mix/config
+jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' ../mix/config > tmp && mv tmp ../mix/config
+jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' ../mix/config > tmp && mv tmp ../mix/config
+jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' ../mix/config > tmp && mv tmp ../mix/config
+jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' ../mix/config > tmp && mv tmp ../mix/config
+jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' ../mix/config > tmp && mv tmp ../mix/config
 
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
