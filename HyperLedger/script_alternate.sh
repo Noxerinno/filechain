@@ -17,7 +17,7 @@ rm -rf ./hfc-key-store
 echo "Putting down network"
 docker-compose -f docker-compose.yaml down
 echo "Creating network"
-docker-compose -f docker-compose.yaml up -d cli0 ca.org1.example.com ca.org2.example.com orderer0.org1.example.com orderer0.org2.example.com peer0.org1.example.com peer0.org2.example.com
+docker-compose -f docker-compose.yaml up -d cli0 orderer0.org1.example.com orderer0.org2.example.com peer0.org1.example.com peer0.org2.example.com
 # wait for Hyperledger Fabric to start
 # incase of errors when running later commands, issue export 
 export FABRIC_START_TIMEOUT=10
