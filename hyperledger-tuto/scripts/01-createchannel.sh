@@ -9,5 +9,3 @@ CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 peer channel create -o orderer0.myapp.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/channel1.tx >&log.txt
 cat log.txt
-
-

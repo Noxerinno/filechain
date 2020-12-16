@@ -1,5 +1,8 @@
 version: '2'
 
+networks:
+  basic:
+
 services:
   ca.root:
     image: hyperledger/fabric-ca
@@ -12,6 +15,8 @@ services:
       - "7054:7054"
     command: sh -c 'fabric-ca-server start  -b adminCA:adminpw -d'
     container_name: ca.root
+    networks:
+      - basic
 
   ica.dummyOrg:
     image: hyperledger/fabric-ca
@@ -27,5 +32,5 @@ services:
      - ./certsICA:/etc/hyperledger/fabric-ca-server
      - ./certsICA:/etc/hyperledger/fabric-ca-server-config
     container_name: ica.dummyOrg
-
-
+    networks:
+      - basic

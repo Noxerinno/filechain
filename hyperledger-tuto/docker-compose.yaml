@@ -1,12 +1,12 @@
 version: '2'
 
+networks:
+  basic:
+
 services:
-
-  
-
-###############################################################
-###################### Ordering Service #######################
-###############################################################
+  ###############################################################
+  ###################### Ordering Service #######################
+  ###############################################################
   orderer0.myapp.com:
     extends:
       file:   base/docker-compose-ordering.yaml
@@ -14,26 +14,33 @@ services:
     volumes:
       - ./crypto-config/ordererOrganizations/myapp.com/orderers/orderer.myapp.com/msp:/var/hyperledger/orderer/msp
     container_name: orderer0.myapp.com
+    networks:
+      - basic
 
     
-###############################################################
-############################ Peers ############################
-###############################################################
+  ###############################################################
+  ############################ Peers ############################
+  ###############################################################
   peer0.dummyOrg.com:
-    container_name: peer0.dummyOrg.com
+    depends_on:
+      - orderer0.myapp.com
     extends:
       file:  base/docker-compose-peer.yaml
       service: peer0.dummyOrg.com
     volumes:
       - ./crypto-config/peerOrganizations/dummyOrg.com/peers/peer0.dummyOrg.com/msp:/var/hyperledger/orderer/msp
-    depends_on:
-      - orderer0.myapp.com
+    container_name: peer0.dummyOrg.com
+    networks:
+      - basic
   
 
-###############################################################
-############################ CLI ##############################
-############################################################### 
+  ###############################################################
+  ############################ CLI ##############################
+  ############################################################### 
   cli:
+    depends_on:
+      - orderer0.myapp.com
+      - peer0.dummyOrg.com
     container_name: cli
     image: hyperledger/fabric-tools
     tty: true
@@ -52,11 +59,10 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dummyOrg.com/users/Admin@dummyOrg.com/msp
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     volumes:
-        - /var/run/:/host/var/run/
-        - ./chaincodes/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
-        - ./crypto-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - ./scripts/:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
-        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
-    depends_on:
-      - orderer0.myapp.com
-      - peer0.dummyOrg.com
+      - /var/run/:/host/var/run/
+      - ./chaincodes/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
+      - ./crypto-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./scripts/:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    networks:
+      - basic

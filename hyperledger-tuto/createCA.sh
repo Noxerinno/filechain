@@ -10,7 +10,7 @@ export TLS=$ORG_DIR/tlsca
 mkdir -p $ORG_DIR/ca $ORG_DIR/msp $PEER_DIR $REGISTRAR_DIR $ADMIN_DIR $TLS
 mkdir certsICA
 
-fabric-ca-client enroll -m admin -u http://adminCA:adminpw@localhost:7054 
+fabric-ca-client enroll -m admin -u http://adminCA:adminpw@ca.root:7054 
 
 
 fabric-ca-client register --id.name ica.dummyOrg --id.type client \
@@ -24,5 +24,3 @@ sudo chmod 777 -R certsICA/*
 sudo chgrp  -R docker $PWD/certsICA/
 sudo chown  -R 1000 $PWD/certsICA/
 cp -r $PWD/certsICA/ $ORG_DIR/ca
-
-
