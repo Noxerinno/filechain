@@ -22,7 +22,7 @@ services:
       - FABRIC_LOGGING_SPEC=debug
     ports:
       - "8054:7054"
-    command: sh -c 'fabric-ca-server start  -b admin:adminpw -d -u http://ca.org1.example.com:adminpw@172.24.0.2:7054'
+    command: sh -c 'fabric-ca-server start  -b admin:adminpw -d -u http://ca.org1.example.com:adminpw@${IP_ROOT}:7054'
     volumes:  
      - ./certsICA:/etc/hyperledger/fabric-ca-server
      - ./certsICA:/etc/hyperledger/fabric-ca-server-config
