@@ -57,6 +57,7 @@ services:
       # - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dummyOrg.com/peers/peer0.dummyOrg.com/tls/MyKey.key
       # - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dummyOrg.com/ca/ica.dummyOrg.com.crt.pem
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/dummyOrg.com/users/Admin@dummyOrg.com/msp
+      - IP_PEER=${IP_PEER}
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     volumes:
       - /var/run/:/host/var/run/
