@@ -25,7 +25,7 @@ services:
       file:  base/docker-compose-peer.yaml
       service: peer0.org1.example.com
     volumes:
-      - ./crypto-config/peerOrganizations/peer0.org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/orderer/msp
+      - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/orderer/msp
     depends_on:
       - orderer0.myapp.com
   
