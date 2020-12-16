@@ -1,3 +1,7 @@
 **/compose/
 swarm.key
 src/filechain/mix/config
+certsICA/
+msp/
+crypto-config/
+channel-artifacts/
