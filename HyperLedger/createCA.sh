@@ -10,21 +10,19 @@ export TLS=$ORG_DIR/tlsca
 mkdir -p $ORG_DIR/ca $ORG_DIR/msp $PEER_DIR $REGISTRAR_DIR $ADMIN_DIR $TLS
 mkdir certsICA
 
-echo 'Enrolling admin:start'
 fabric-ca-client enroll -m admin -u http://adminCA:adminpw@localhost:7054 
-echo 'Enrolling admin:done'
 
-echo 'REgistering: start'
+
 fabric-ca-client register --id.name ca.org1.example.com --id.type client \
- --id.secret adminpw --csr.names C=FR,ST=Paris,L=Paris,O=org1.example.com \
+ --id.secret adminpw --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com \
  --csr.cn ca.org1.example.com -m ca.org1.example.com --id.attrs  '"hf.IntermediateCA=true"' -u http://localhost:7054 
-echo 'Registering: done'
 
-docker-compose -f docker-compose.yaml up -d ca.org1.example.com
+
+docker-compose -f docker-compose-ca.yaml up -d ca.org1.example.com
 sudo chmod 777 -R certsICA/
 sudo chmod 777 -R certsICA/*
 sudo chgrp  -R docker $PWD/certsICA/
 sudo chown  -R 1000 $PWD/certsICA/
-cp -r $PWD/certsICA/* $ORG_DIR/ca
+cp -r $PWD/certsICA/ $ORG_DIR/ca
 
 

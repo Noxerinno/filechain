@@ -3,13 +3,12 @@ export ORG_DIR=$PWD/crypto-config/peerOrganizations/org1.example.com
 export PEER_DIR=$ORG_DIR/peers/peer0.org1.example.com
 export REGISTRAR_DIR=$ORG_DIR/users/admin
 export ADMIN_DIR=$ORG_DIR/users/Admin@org1.example.com
-echo "Generating org1.example"
-echo "[Step 1] Enroling client and registering peer and user identitities"
+echo "[Step 1] Enroling cient and registering peer and user identitities"
 
 export FABRIC_CA_CLIENT_HOME=$REGISTRAR_DIR
 
 # Enroll client to interact
-fabric-ca-client enroll --csr.names C=FR,ST=Paris,L=Paris,O=org1.example.com -m admin -u http://admin:adminpw@localhost:8054 
+fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m admin -u http://admin:adminpw@localhost:8054 
 
 sleep 10
 
@@ -28,7 +27,7 @@ echo "[Step 2] Creating admin certs"
 export FABRIC_CA_CLIENT_HOME=$ADMIN_DIR
 # Get certificates from ICA
 
-fabric-ca-client enroll --csr.names C=FR,ST=Paris,L=Paris,O=org1.example.com -m Admin@org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m Admin@org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
 mkdir -p $ADMIN_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $ADMIN_DIR/msp/admincerts/
 
 
@@ -36,7 +35,7 @@ echo "[Step 2] Completed"
 echo "[Step 3] Creating peer certs"
 
 export FABRIC_CA_CLIENT_HOME=$PEER_DIR
-fabric-ca-client enroll --csr.names C=FR,ST=Paris,L=Paris,O=org1.example.com -m peer0.org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m peer0.org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
 mkdir -p $PEER_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $PEER_DIR/msp/admincerts/
 sleep 2
 echo "[Step 3] Completed"
@@ -53,3 +52,4 @@ echo "[Step 5] Creating Scaffolfding"
 
 cp -r $PWD/certsICA/* $ORG_DIR/ca
 echo "[Step 5] Completed"
+
