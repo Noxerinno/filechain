@@ -1,1 +1,0 @@
-./scripts/01-createchannel.sh: line 10: peer: command not found

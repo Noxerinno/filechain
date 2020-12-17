@@ -1,5 +1,0 @@
-OrdererOrgs:
-  - Name: Orderer
-    Domain: myapp.com
-    Specs:
-      - Hostname: orderer
