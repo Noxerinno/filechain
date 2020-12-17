@@ -6,13 +6,15 @@
 version: '2'
 
 services:
-  orderer0.myapp.com:
+  orderer0.org1.example.com:
     extends:
       file: peer-base.yaml
       service: orderer-base
+    environment:
+        - ORDERER_GENERAL_LOCALMSPID=Org1MSP
     volumes:
         - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - ../crypto-config/ordererOrganizations/myapp.com/orderers/orderer.myapp.com/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp:/var/hyperledger/orderer/msp
     ports:
       - 7050:7050
   

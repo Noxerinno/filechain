@@ -1,19 +1,5 @@
 ---
 Organizations:
-    - &OrdererOrg
-        Name: OrdererOrg
-        ID: OrdererMSP
-        MSPDir: crypto-config/ordererOrganizations/myapp.com/msp
-        Policies: &OrdererOrgPolicies
-            Readers:
-                Type: Signature
-                Rule: "OR('OrdererMSP.member')"
-            Writers:
-                Type: Signature
-                Rule: "OR('OrdererMSP.member')"
-            Admins:
-                Type: Signature
-                Rule: "OR('OrdererMSP.admin')"
     - &Org1
         Name: Org1MSP
         ID: Org1MSP
@@ -31,6 +17,8 @@ Organizations:
         AnchorPeers:
             - Host: peer0.org1.example.com
               Port: 7051
+            - Host: orderer0.org1.example.com
+              Port: 7050
     - &Org2
         Name: Org2MSP
         ID: Org2MSP
@@ -89,7 +77,7 @@ Application: &ApplicationDefaults
 Orderer: &OrdererDefaults
     OrdererType: solo
     Addresses:
-        - orderer0.myapp.com:7050
+        - orderer0.org1.example.com:7050
     BatchTimeout: 2s
     BatchSize:
         MaxMessageCount: 500
@@ -131,7 +119,9 @@ Profiles:
         Orderer:
             <<: *OrdererDefaults
             Organizations:
-                - *OrdererOrg
+                - *Org1
+            Capabilities:
+                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:

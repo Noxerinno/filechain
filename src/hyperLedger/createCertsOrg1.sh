@@ -1,6 +1,7 @@
 # Setting environment Variables #
 export ORG_DIR=$PWD/crypto-config/peerOrganizations/org1.example.com
 export PEER_DIR=$ORG_DIR/peers/peer0.org1.example.com
+export ORDERER_DIR=$ORG_DIR/orderers/orderer0.org1.example.com
 export REGISTRAR_DIR=$ORG_DIR/users/admin
 export ADMIN_DIR=$ORG_DIR/users/Admin@org1.example.com
 echo "[Step 1] Enroling cient and registering peer and user identitities"
@@ -17,6 +18,7 @@ fabric-ca-client register --id.name Admin@org1.example.com --id.secret mysecret 
 
 fabric-ca-client register --id.name peer0.org1.example.com --id.secret mysecret --id.type peer --id.affiliation org1 -u http://localhost:8054 
 
+fabric-ca-client register --id.name orderer0.org1.example.com --id.secret mysecret --id.type orderer --id.affiliation org1 -u http://localhost:8054 
 
 sleep 3
 echo "[Step 1] Completed"
@@ -39,7 +41,14 @@ fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -
 mkdir -p $PEER_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $PEER_DIR/msp/admincerts/
 sleep 2
 echo "[Step 3] Completed"
-echo "[Step 4] Creating MSP for Organization 1"
+echo "[Step 4] Creating orderer certs"
+
+export FABRIC_CA_CLIENT_HOME=$ORDERER_DIR
+fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m orderer.org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+mkdir -p $ORDERER_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $ORDERER_DIR/msp/admincerts/
+sleep 2
+echo "[Step 4] Completed"
+echo "[Step 5] Creating MSP for Organization 1"
 # Generating scaffolding
 
 mkdir -p $ORG_DIR/msp/admincerts $ORG_DIR/msp/intermediatecerts $ORG_DIR/msp/cacerts
@@ -47,9 +56,9 @@ cp $ADMIN_DIR/msp/signcerts/*.pem $ORG_DIR/msp/admincerts/
 cp $PEER_DIR/msp/cacerts/*.pem $ORG_DIR/msp/cacerts/
 cp $PEER_DIR/msp/intermediatecerts/*.pem $ORG_DIR/msp/intermediatecerts/
 sleep 3
-echo "[Step 4] Completed"
-echo "[Step 5] Creating Scaffolfding"
+echo "[Step 5] Completed"
+echo "[Step 6] Creating Scaffolfding"
 
 cp -r $PWD/certsICA/* $ORG_DIR/ca
-echo "[Step 5] Completed"
+echo "[Step 6] Completed"
 
