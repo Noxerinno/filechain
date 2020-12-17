@@ -84,4 +84,5 @@ Le nom des auteurs/contributeurs ne peut être utilisé pour promouvoir un produ
 "Copyleft" - Wikipedia - 11 juillet 2020 - https://fr.wikipedia.org/wiki/Copyleft  
 "Licence publique générale GNU" - Wikipedia - 14 novembre 2020 - https://fr.wikipedia.org/wiki/Licence_publique_g%C3%A9n%C3%A9rale_GNU  
 "Licence MIT" - Wikipedia - 13 novembre 2019 - https://fr.wikipedia.org/wiki/Licence_MIT  
-"Licence Apache" - Wikipedia - 30 mars 2020 - https://fr.wikipedia.org/wiki/Licence_Apache  
+"Licence Apache" - Wikipedia - 30 mars 2020 - https://fr.wikipedia.org/wiki/Licence_Apache 
+"HOW SHOULD I APPLY THE APACHE LICENSE TO MY OWN SOFTWARE ?" - Apache - - http://www.apache.org/foundation/license-faq.html#Apply-My-Software
