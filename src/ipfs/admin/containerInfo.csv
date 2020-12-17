@@ -1,0 +1,2 @@
+9e5a8a6a80f0        ipfs/ipfs-cluster     "/sbin/tini -- /usr/…"   12 minutes ago      Up 12 minutes       0.0.0.0:9094-9096->9094-9096/tcp                                          admin_ipfs-cluster_1
+56b59c6aeb8f        ipfs/go-ipfs:latest   "/sbin/tini -- /usr/…"   12 minutes ago      Up 12 minutes       0.0.0.0:4001->4001/tcp, 4001/udp, 0.0.0.0:5001->5001/tcp, 8080-8081/tcp   admin_ipfs_1
