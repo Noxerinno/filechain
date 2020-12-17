@@ -31,15 +31,30 @@ Organizations:
         AnchorPeers:
             - Host: peer0.org1.example.com
               Port: 7051
+    - &Org2
+        Name: Org2MSP
+        ID: Org2MSP
+        MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
+        Policies: &Org2MSPPolicies
+            Readers:
+                Type: Signature
+                Rule: "OR('Org2MSP.member')"
+            Writers:
+                Type: Signature
+                Rule: "OR('Org2MSP.member')"
+            Admins:
+                Type: Signature
+                Rule: "OR('Org2MSP.admin')"
+        AnchorPeers:
+            - Host: peer0.org2.example.com
+              Port: 8051
 Capabilities:
     Channel: &ChannelCapabilities
-        V1_3: true
+        V2_0: true
     Orderer: &OrdererCapabilities
-        V1_1: true
+        V2_0: true
     Application: &ApplicationCapabilities
-        V1_3: true
-        V1_2: false
-        V1_1: false
+        V2_0: true
 Application: &ApplicationDefaults
     ACLs: &ACLsDefault
         lscc/ChaincodeExists: /Channel/Application/Readers
@@ -121,6 +136,7 @@ Profiles:
             SampleConsortium:
                 Organizations:
                     - *Org1
+                    - *Org2
     Channel:
         <<: *ChannelDefaults
         Consortium: SampleConsortium
@@ -128,3 +144,4 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *Org1
+                - *Org2

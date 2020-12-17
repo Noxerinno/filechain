@@ -12,15 +12,21 @@ sleep 10
 sleep 10
 ./generate-artifacts.sh
 sleep 10
-#echo "starting peer0"
-#docker-compose up -d peer0.org1.example.com
-#export IP_PEER_ORG1=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org1.example.com)
+echo "starting peer0.org1"
+docker-compose up -d peer0.org1.example.com
+export IP_PEER_ORG1=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org1.example.com)
+echo "starting peer0.org2"
+docker-compose up -d peer0.org2.example.com
+export IP_PEER_ORG2=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org2.example.com)
+echo "starting all containers"
+docker-compose up -d
 
-#echo "starting all containers"
-#docker-compose up -d
-
-#echo "exec in cli"
-#docker exec -it cli sh -c "./scripts/01-createchannel.sh"
-#sleep 10
-#docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
-
+echo "exec in cli"
+echo "Creation channel"
+docker exec -it cli sh -c "./scripts/01-createchannel.sh"
+sleep 10
+echo "Org1 joining channel"
+docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
+sleep 10
+echo "Org2 joining channel"
+docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"

@@ -1,11 +1,11 @@
 docker rm -f $(docker ps -aq)
 docker volume prune
-rm -r certsICA/
+sudo rm -r certsICA/
 
-rm -r crypto-config
+sudo rm -r crypto-config
 
-rm -r msp
+sudo rm -r msp
 
-rm -r channel-artifacts
+sudo rm -r channel-artifacts
 
 

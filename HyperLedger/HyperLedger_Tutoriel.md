@@ -1,5 +1,20 @@
 # HyperLedger Tutoriel
 
+## Sommaire
+
+- [HyperLedger Tutoriel](#hyperledger-tutorial)
+  - [Sommaire](#sommaire)
+  - [Pré-requis](#pré-requis)
+  - [Installation de HyperLedger](#installation-de-hyperledger)
+    - [Installation des Samples, Binaries, and Docker Images](#installation-des-samples-binaries-and-docker-images)
+  - [Tester le réseau HyperLedger de l'exemple](#tester-le-réseau-hyperledger-de-lexemple)
+    - [Lancement du réseau](#lancement-du-réseau)
+    - [Création d'un channel](#création-dun-channel)
+    - [Déploiement d'un smart contract](#déploiement-dun-smart-contract)
+    - [Intéragir avec le réseau](#intéragir-avec-le-réseau)
+    - [Première application](#première-application)
+  - [Setup du réseau](#setup-du-réseau)
+
 ## Pré-requis
   - Git
   - Curl ( :warning: Sur windows l'installation de curl est plus complexe :warning: )
@@ -13,7 +28,7 @@
  ```curl -sSL https://bit.ly/2ysbOFE | bash -s```  
 > Il est possible que la commande suivante ne fonctionne pas sur Windows. Si c'est le cas exécuter directement le fichier scriptHyperLedger.sh situé dans le dossier script. Sinon téléchargez le projet sur le lien suivant https://github.com/hyperledger/fabric-samples.     
 > :warning: Si docker n'a pas été installer la commande précédente et le script ne téléchargeront pas les images dockers. Donc veuillez vérifier que Docker a bien été préalablement installé et qu'il fonctionne. :warning:  
-> Il se peut que les dossier bin et config n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants  
+> Il se peut que les dossier *bin* et *config* n'ait pas été installé alors que le script indique que si. Dans ce cas éventuel, les archives peuvent être télécharger via les liens suivants  
 >
 > Pour Windows :  
 > - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-windows-amd64-2.2.1.tar.gz  
@@ -23,7 +38,7 @@
 > - https://github.com/hyperledger/fabric/releases/download/v2.2.1/hyperledger-fabric-linux-amd64-2.2.1.tar.gz  
 > - https://github.com/hyperledger/fabric/releases/download/v1.4.9/hyperledger-fabric-ca-linux-amd64-1.4.9.tar.gz  
 
-Les commandes situés dans le bin peuvent être ajouté au PATH pour faciliter les choses.  
+Les commandes situés dans le *bin* peuvent être ajouté au PATH pour faciliter les choses.  
 ```export PATH=<path to download location>/bin:$PATH```  
 
 ## Tester le réseau HyperLedger de l'exemple
@@ -89,7 +104,7 @@ Une fois après mis en tant que Org2, en lançant `peer chaincode query -C mycha
 
 En exécutant la commande `./network.sh down`, on éteint le réseau et on supprime tous ce qu'on a pu faire dessus.
 
-## Première application
+### Première application
 
 On repart d'un projet vierge. Exécutez à nouveau le fichier *script.sh* et allez dans le dossier *fabric-samples/test-network* pour exécuter la commande:  
 `./network.sh up createChannel -c mychannel -ca`  
@@ -106,10 +121,9 @@ Une fois que c'est fini tu peux fermer le réseau avec `./network.sh down
 
 ## Setup du réseau
 
-Les fichiers *configtx.yaml* et *crypto-config.yaml* permettent de configurer les ressources du réseau (telles que les organisation les peers et orderers...) afin de générer leur certificat et fichiers associés en utilisant le script *script_crypto.sh*  
-
-Pour lancer le réśeau on utilise le fichier *script.sh* (ou *script_alternate.sh*) mais pour le moment ne passe pas l'étape de création d'un channel
-
+Pour le moment le réseau met en place les certificats pour l'organisation 1 et 2 et créer un channel grâce à une organisation *orderer* et faire joindre les organisations à ce channel.  
+Pour lancer le réseau, on peut lancer le script *start.sh* et on peut réinitialiser le réseau avec le script *reset.sh*.  
+> Le dossier *bin* contenant les commandes HyperLedger doit avoir été ajouté au PATH au risque de ne pas fonctionner.
 
 [Channel]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#channel
 [Chaincode]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#chaincode

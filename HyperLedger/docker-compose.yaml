@@ -28,6 +28,16 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/var/hyperledger/orderer/msp
     depends_on:
       - orderer0.myapp.com
+
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file:  base/docker-compose-peer.yaml
+      service: peer0.org2.example.com
+    volumes:
+      - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/orderer/msp
+    depends_on:
+      - orderer0.myapp.com
   
 
 ###############################################################
@@ -50,7 +60,8 @@ services:
       # - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/MyKey.key
       # - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/ca/ca.org1.example.com.crt.pem
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-      - IP_PEER=${IP_PEER_ORG1}
+      - IP_PEER_ORG1=${IP_PEER_ORG1}
+      - IP_PEER_ORG2=${IP_PEER_ORG2}
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
     volumes:
         - /var/run/:/host/var/run/
@@ -61,3 +72,4 @@ services:
     depends_on:
       - orderer0.myapp.com
       - peer0.org1.example.com
+      - peer0.org2.example.com
