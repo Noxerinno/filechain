@@ -20,20 +20,33 @@
 # Initiate private network
 # generate swarm file
 
+FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
+IPFS_ADMIN_DIR=$FILCHAIN_ROOT/src/ipfs/admin
 
 export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
-../mix/bin/ipfs-swarm-key-gen > ../mix/swarm.key
-export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' ../mix/swarm.key)
+$FILCHAIN_ROOT/src/ipfs/mix/bin/ipfs-swarm-key-gen > $FILCHAIN_ROOT/src/ipfs/mix/swarm.key
+export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILCHAIN_ROOT/src/ipfs/mix/swarm.key)
 echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
 
-docker-compose up -d
+docker-compose -f $FILCHAIN_ROOT/src/ipfs/admin/docker-compose.yml up -d
+
 IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
+IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
 echo "Containers $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
 
-sleep 10
+WAITING="Waiting for IPFS to start"
+while [ "$IPFS_IS_UP" != "api" ]
+do
+    echo -ne $WAITING'\r'
+    WAITING+='.'
+    IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
+    sleep 0.5
+done
+echo -ne '\n'
+
 echo "Ready!"
 echo "Setting API Access Control"
 docker exec $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://0.0.0.0:5001", "http://localhost:3000", "http://127.0.0.1:5001", "https://webui.ipfs.io"]'
@@ -58,23 +71,23 @@ echo "Done with setting private network"
 # IPFS Cluster
 
 echo "Setting service.json"
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json ./service.json 
-jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
-jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' ./service.json  > tmp && mv tmp ./service.json
-docker cp ./service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
-rm ./service.json
+docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/service.json 
+jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
+jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
+docker cp $IPFS_ADMIN_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
+rm $IPFS_ADMIN_DIR/service.json
 
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json ./identity.json 
-PEERID=$(cat ./identity.json | jq '.id')
+docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/identity.json 
+PEERID=$(cat $IPFS_ADMIN_DIR/identity.json | jq '.id')
 PEERID=$(echo $PEERID | cut -d '"' -f 2)
-rm ./identity.json
+rm $IPFS_ADMIN_DIR/identity.json
 
-jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > ../mix/config
-jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' ../mix/config > tmp && mv tmp ../mix/config
-jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' ../mix/config > tmp && mv tmp ../mix/config
-jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' ../mix/config > tmp && mv tmp ../mix/config
-jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' ../mix/config > tmp && mv tmp ../mix/config
-jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' ../mix/config > tmp && mv tmp ../mix/config
+jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > $FILCHAIN_ROOT/src/ipfs/mix/config
+jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
+jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
+jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
+jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
+jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
 
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs

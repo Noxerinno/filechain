@@ -20,7 +20,9 @@
 
 CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 echo $CLUSTER_SECRET
-docker-compose up -d
+
+FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
+docker-compose -f $FILCHAIN_ROOT/src/ipfs/mix/docker-compose.yml up -d
 
 IPFS_CONT_ID=$(docker ps -aqf "name=mix_client-ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=mix_client-ipfs-cluster_1")
@@ -29,7 +31,21 @@ IPFS_CLUSTER_CONT_ID_ADMIN=$(docker ps -aqf "name=mix_admin-ipfs-cluster_1")
 
 echo $IPFS_CONT_ID_ADMIN
 echo $IPFS_CLUSTER_CONT_ID_ADMIN
-sleep 10
+
+IPFS_IS_UP=$(docker exec $IPFS_CONT_ID_ADMIN ls /data/ipfs | grep api)
+echo $IPFS_IS_UP
+echo "Containers $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
+
+WAITING="Waiting for IPFS to start"
+while [ "$IPFS_IS_UP" != "api" ]
+do
+    echo -ne $WAITING'\r'
+    WAITING+='.'
+    IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
+    sleep 1
+done
+echo -ne '\n'
+
 docker exec -it $IPFS_CONT_ID_ADMIN ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"http://0.0.0.0:5001\", \"http://localhost:3000\", \"http://127.0.0.1:5001\", \"https://webui.ipfs.io\"]'
 docker exec -it $IPFS_CONT_ID_ADMIN ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"PUT\", \"POST\"]'
 
