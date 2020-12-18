@@ -51,6 +51,8 @@ Organizations:
         AnchorPeers:
             - Host: peer0.org2.example.com
               Port: 8051
+            - Host: orderer0.org1.example.com
+              Port: 8050
 Capabilities:
     Channel: &ChannelCapabilities
         V2_0: true
@@ -135,6 +137,7 @@ Profiles:
             <<: *OrdererDefaults
             Organizations:
                 - *Org1
+                - *Org2
             Capabilities:
                 <<: *OrdererCapabilities
         Consortiums:
