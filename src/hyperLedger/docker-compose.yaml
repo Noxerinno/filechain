@@ -31,6 +31,15 @@ services:
       - ./crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp:/var/hyperledger/orderer/msp
     container_name: orderer0.org1.example.com
 
+
+  orderer0.org2.example.com:
+    extends:
+      file:   base/docker-compose-ordering.yaml
+      service: orderer0.org2.example.com
+    volumes:
+      - ./crypto-config/peerOrganizations/org2.example.com/orderers/orderer0.org2.example.com/msp:/var/hyperledger/orderer/msp
+    container_name: orderer0.org2.example.com
+
     
 ###############################################################
 ############################ Peers ############################
@@ -53,7 +62,7 @@ services:
     volumes:
       - ./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/var/hyperledger/orderer/msp
     depends_on:
-      - orderer0.org1.example.com
+      - orderer0.org2.example.com
   
 
 ###############################################################
@@ -87,5 +96,6 @@ services:
         - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
     depends_on:
       - orderer0.org1.example.com
+      - orderer0.org2.example.com
       - peer0.org1.example.com
       - peer0.org2.example.com
