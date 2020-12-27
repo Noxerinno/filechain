@@ -46,3 +46,27 @@ docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
 sleep 10
 echo "Org2 joining channel"
 docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
+sleep 10
+echo "Installing hyperledger go stuff"
+docker exec -it cli sh -c "go get github.com/hyperledger/fabric-chaincode-go/shim"
+sleep 10
+echo "Installing CC Org1"
+docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
+#sleep 10
+#echo "Instancing CC Org1"
+#docker exec -it cli sh -c "./scripts/04-instanciateCCorg1.sh"
+#sleep 10
+#echo "Invoking CC Org1"
+#docker exec -it cli sh -c "./scripts/05-invokeCCorg1.sh"
+#sleep 10
+#echo "Querying CC Org1"
+#docker exec -it cli sh -c "./scripts/06-queryCCorg1.sh"
+
+
+
+
+
+
+
+
+
