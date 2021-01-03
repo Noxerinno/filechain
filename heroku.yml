@@ -1,0 +1,10 @@
+setup:
+build:
+ docker:
+   ipfs_admin: ./src/ipfs/admin/ipfsDocker/Dockerfile
+ config:
+   REQUIREMENTS_FILENAME: heroku.yml
+release:
+ image: ipfs_admin
+run:
+ ipfs_admin: daemon --migrate=true
