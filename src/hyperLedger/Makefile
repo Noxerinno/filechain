@@ -14,14 +14,21 @@
 
 # ==============================================================================
 
-#!/bin/bash
+ALPINE_VER ?= 3.12
+BASE_VERSION = 2.3.0
+GO_VER = 1.14.12
+GO_TAGS ?=
 
-# export PATH=$PWD/bin:$PATH
-export FABRIC_CFG_PATH=${PWD}
-echo "Genetating certs for ordering service"
-./bin/cryptogen generate --config=./crypto-config.yaml
 
-echo "Generate artifacts for channel"
-mkdir -p channel-artifacts
-./bin/configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID testchainid
-./bin/configtxgen -profile Channel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
+all : clean
+	
+build :
+	./build.sh
+
+restart :
+	docker-compose stop
+	docker-compose start
+
+clean :
+	docker-compose down
+	docker system prune

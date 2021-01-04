@@ -20,21 +20,22 @@ export PEER_DIR=$ORG_DIR/peers/peer0.org1.example.com
 export ORDERER_DIR=$ORG_DIR/orderers/orderer0.org1.example.com
 export REGISTRAR_DIR=$ORG_DIR/users/admin
 export ADMIN_DIR=$ORG_DIR/users/Admin@org1.example.com
+export IP_ORG1=$1
 echo "[Step 1] Enroling cient and registering peer and user identitities"
 
 export FABRIC_CA_CLIENT_HOME=$REGISTRAR_DIR
 
 # Enroll client to interact
-fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m admin -u http://admin:adminpw@localhost:8054 
+./bin/fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m admin -u http://admin:adminpw@${IP_ORG1}:7054 
 
 sleep 10
 
 # Register admin identity and peer
-fabric-ca-client register --id.name Admin@org1.example.com --id.secret mysecret --id.type client --id.affiliation org1 -u http://localhost:8054 
+./bin/fabric-ca-client register --id.name Admin@org1.example.com --id.secret mysecret --id.type client --id.affiliation org1 -u http://${IP_ORG1}:7054 
 
-fabric-ca-client register --id.name peer0.org1.example.com --id.secret mysecret --id.type peer --id.affiliation org1 -u http://localhost:8054 
+./bin/fabric-ca-client register --id.name peer0.org1.example.com --id.secret mysecret --id.type peer --id.affiliation org1 -u http://${IP_ORG1}:7054 
 
-fabric-ca-client register --id.name orderer0.org1.example.com --id.secret mysecret --id.type orderer --id.affiliation org1 -u http://localhost:8054 
+./bin/fabric-ca-client register --id.name orderer0.org1.example.com --id.secret mysecret --id.type orderer --id.affiliation org1 -u http://${IP_ORG1}:7054 
 
 sleep 3
 echo "[Step 1] Completed"
@@ -45,7 +46,7 @@ echo "[Step 2] Creating admin certs"
 export FABRIC_CA_CLIENT_HOME=$ADMIN_DIR
 # Get certificates from ICA
 
-fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m Admin@org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+./bin/fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m Admin@org1.example.com -u http://Admin@org1.example.com:mysecret@${IP_ORG1}:7054 
 mkdir -p $ADMIN_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $ADMIN_DIR/msp/admincerts/
 
 
@@ -53,14 +54,14 @@ echo "[Step 2] Completed"
 echo "[Step 3] Creating peer certs"
 
 export FABRIC_CA_CLIENT_HOME=$PEER_DIR
-fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m peer0.org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+./bin/fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m peer0.org1.example.com -u http://Admin@org1.example.com:mysecret@${IP_ORG1}:7054 
 mkdir -p $PEER_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $PEER_DIR/msp/admincerts/
 sleep 2
 echo "[Step 3] Completed"
 echo "[Step 4] Creating orderer certs"
 
 export FABRIC_CA_CLIENT_HOME=$ORDERER_DIR
-fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m orderer.org1.example.com -u http://Admin@org1.example.com:mysecret@localhost:8054 
+./bin/fabric-ca-client enroll --csr.names C=ES,ST=Madrid,L=Madrid,O=org1.example.com -m orderer.org1.example.com -u http://Admin@org1.example.com:mysecret@${IP_ORG1}:7054 
 mkdir -p $ORDERER_DIR/msp/admincerts && cp $ADMIN_DIR/msp/signcerts/*.pem $ORDERER_DIR/msp/admincerts/
 sleep 2
 echo "[Step 4] Completed"
@@ -75,6 +76,6 @@ sleep 3
 echo "[Step 5] Completed"
 echo "[Step 6] Creating Scaffolfding"
 
-cp -r $PWD/certsICA/* $ORG_DIR/ca
+cp -r $PWD/crypto-config/ica-servers/certsICAOrg1/* $ORG_DIR/ca
 echo "[Step 6] Completed"
 
