@@ -32,7 +32,7 @@ instantiateChaincode () {
 	# while 'peer chaincode' command can get the orderer endpoint from the peer (if join was successful),
 	# lets supply it directly as we know it using the "-o" option
 
-		peer chaincode instantiate -o orderer0.org1.example.com:7050 -C $CHANNEL_NAME -n mycontract2 -v 2.2 -c '{"Args":["init","a","100","b","200"]}' >&log.txt
+		peer chaincode instantiate -o orderer0.org1.example.com:7050 -C $CHANNEL_NAME -n mycontract2 -v 0 -c '{"Args":["init","a","100","b","200"]}' >&log.txt
     
 	res=$?
 	cat log.txt

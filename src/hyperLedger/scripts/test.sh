@@ -24,6 +24,7 @@ CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-
-peer chaincode install -n mycontract2 -v 0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
+peer lifecycle chaincode package chaincode_example02.tar.gz --path github.com/hyperledger/fabric/examples/chaincode/go/ --lang golang --label chaincode_example02_1.0
+peer lifecycle chaincode install chaincode_example02.tar.gz
+#peer chaincode install -n mycontract2 -v 0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
 cat log.txt
