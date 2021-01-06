@@ -19,29 +19,34 @@
 
 # Initiate private network
 # generate swarm file
-
 FILECHAIN_ROOT=$(git rev-parse --show-toplevel)
 IPFS_ADMIN_DIR=$FILECHAIN_ROOT/src/ipfs/admin
 
-# export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
+export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
 # $FILECHAIN_ROOT/src/ipfs/mix/bin/ipfs-swarm-key-gen > $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 # export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
 # echo $SWARMKEY
 # echo "Key generated and stored in swarm.key"
 
-
+#Build du conteneur de génération de la swarmkey
 echo "Building swarmkey container..."
-docker build -t ipfs-swarmkey $FILECHAIN_ROOT/src/ipfs/admin/setup-image/ 1>/dev/null
-#docker-compose -f  ipfs-swarmkey
+docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
 
-docker-compose -f $FILECHAIN_ROOT/src/ipfs/admin/docker-compose.yml up -d
+#Démarrage de la stack
+docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d
 
+#Récupération des ID des conteneurs
+IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
 IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
-IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
-echo "Containers $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
+echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
 
+#Génération de la swarmkey
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/gen-key.sh"
+
+#Vérification du démarrage du conteneur IPFS
+IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
 WAITING="Waiting for IPFS to start"
 while [ "$IPFS_IS_UP" != "api" ]
 do

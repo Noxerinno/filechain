@@ -5,12 +5,8 @@ RUN go get github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen
 
 FROM golang:alpine
 
-RUN export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
-RUN echo $CLUSTER_SECRET
-RUN mkdir /key
-COPY --from=build /go/bin/ipfs-swarm-key-gen /
-RUN /ipfs-swarm-key-gen > /key/swarm.key
-RUN sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' /key/swarm.key
+RUN mkdir /swarmkey/ 
+COPY --from=build /go/bin/ipfs-swarm-key-gen /swarmkey/
 
 
 # FROM golang:alpine

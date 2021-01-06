@@ -21,13 +21,16 @@ networks:
     basic:
 
 services: 
-  swarmkey:
-    image: ipfs-swarmkey:latest
+  ipfs-setup:
+    image: ipfs-setup:latest
     volumes:
-      - ./compose/data/ipfs:/key/
+      - ./setup-image/assets/:/swarmkey/scripts/
+      - ./compose/data/swarmkey/:/swarmkey/key/
     restart: always
 
   ipfs:
+    depends_on:
+      - ipfs-setup 
     image: ipfs/go-ipfs:latest
     volumes:
       - ./compose/data/ipfs:/data/ipfs
@@ -44,7 +47,8 @@ services:
       - "5001:5001"
     
   ipfs-cluster:
-    depends_on: 
+    depends_on:
+      - ipfs-setup 
       - ipfs
     image: ipfs/ipfs-cluster:latest
     volumes: 
