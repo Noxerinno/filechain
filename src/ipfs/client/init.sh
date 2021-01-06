@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +15,6 @@
 
 # ==============================================================================
 
-
-
-#!/bin/bash
 
 FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
 IPFS_CLIENT_DIR=$FILCHAIN_ROOT/src/ipfs/client

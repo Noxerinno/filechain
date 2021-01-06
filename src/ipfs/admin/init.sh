@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +16,6 @@
 # ==============================================================================
 
 
-#!/bin/bash
-
 # Initiate private network
 # generate swarm file
 FILECHAIN_ROOT=$(git rev-parse --show-toplevel)
@@ -29,20 +28,24 @@ echo "Building swarmkey container..."
 docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
 
 #Démarrage de la stack
-docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d
-
-#Récupération des ID des conteneurs
+docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-setup
 IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
-IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
-IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
-echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
-
 #Génération de la swarmkey
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/scripts/gen-key.sh"
 cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
+docker stop $IPFS_SETUP_CONT_ID
+docker rm $IPFS_SETUP_CONT_ID
 echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
+
+docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs ipfs-cluster
+
+#Récupération des ID des conteneurs
+IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
+IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
+echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
+
 
 #Vérification du démarrage du conteneur IPFS
 IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
