@@ -21,6 +21,12 @@ networks:
     basic:
 
 services: 
+  swarmkey:
+    image: ipfs-swarmkey:latest
+    volumes:
+      - ./compose/data/ipfs:/key/
+    restart: always
+
   ipfs:
     image: ipfs/go-ipfs:latest
     volumes:

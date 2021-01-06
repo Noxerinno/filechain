@@ -20,17 +20,22 @@
 # Initiate private network
 # generate swarm file
 
-FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
-IPFS_ADMIN_DIR=$FILCHAIN_ROOT/src/ipfs/admin
+FILECHAIN_ROOT=$(git rev-parse --show-toplevel)
+IPFS_ADMIN_DIR=$FILECHAIN_ROOT/src/ipfs/admin
 
-export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
+# export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
-$FILCHAIN_ROOT/src/ipfs/mix/bin/ipfs-swarm-key-gen > $FILCHAIN_ROOT/src/ipfs/mix/swarm.key
-export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILCHAIN_ROOT/src/ipfs/mix/swarm.key)
-echo $SWARMKEY
-echo "Key generated and stored in swarm.key"
+# $FILECHAIN_ROOT/src/ipfs/mix/bin/ipfs-swarm-key-gen > $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
+# export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
+# echo $SWARMKEY
+# echo "Key generated and stored in swarm.key"
 
-docker-compose -f $FILCHAIN_ROOT/src/ipfs/admin/docker-compose.yml up -d
+
+echo "Building swarmkey container..."
+docker build -t ipfs-swarmkey $FILECHAIN_ROOT/src/ipfs/admin/setup-image/ 1>/dev/null
+#docker-compose -f  ipfs-swarmkey
+
+docker-compose -f $FILECHAIN_ROOT/src/ipfs/admin/docker-compose.yml up -d
 
 IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
@@ -82,12 +87,12 @@ PEERID=$(cat $IPFS_ADMIN_DIR/identity.json | jq '.id')
 PEERID=$(echo $PEERID | cut -d '"' -f 2)
 rm $IPFS_ADMIN_DIR/identity.json
 
-jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > $FILCHAIN_ROOT/src/ipfs/mix/config
-jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
-jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
-jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
-jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
-jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' $FILCHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILCHAIN_ROOT/src/ipfs/mix/config
+jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > $FILECHAIN_ROOT/src/ipfs/mix/config
+jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
+jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
+jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
+jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
+jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
 
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
