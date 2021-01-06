@@ -17,5 +17,5 @@
 
 #!/bin/bash
 
-/swarmkey/ipfs-swarm-key-gen > /key/swarm.key
+/swarmkey/ipfs-swarm-key-gen > /swarmkey/key/swarm.key
 sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' /swarmkey/key/swarm.key 1>/dev/null

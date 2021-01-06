@@ -24,11 +24,6 @@ IPFS_ADMIN_DIR=$FILECHAIN_ROOT/src/ipfs/admin
 
 export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
-# $FILECHAIN_ROOT/src/ipfs/mix/bin/ipfs-swarm-key-gen > $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
-# export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
-# echo $SWARMKEY
-# echo "Key generated and stored in swarm.key"
-
 #Build du conteneur de génération de la swarmkey
 echo "Building swarmkey container..."
 docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
@@ -43,17 +38,21 @@ IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
 echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
 
 #Génération de la swarmkey
-docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/gen-key.sh"
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/scripts/gen-key.sh"
+cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
+export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
+echo $SWARMKEY
+echo "Key generated and stored in swarm.key"
 
 #Vérification du démarrage du conteneur IPFS
 IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
 WAITING="Waiting for IPFS to start"
 while [ "$IPFS_IS_UP" != "api" ]
 do
+    sleep 0.5
     echo -ne $WAITING'\r'
     WAITING+='.'
     IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
-    sleep 0.5
 done
 echo -ne '\n'
 
