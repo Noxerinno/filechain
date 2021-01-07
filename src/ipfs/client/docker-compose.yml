@@ -22,7 +22,7 @@ networks:
        external:
             name: admin_basic
 
-services: 
+services:
   ipfs:
     image: ipfs/go-ipfs:latest
     volumes:

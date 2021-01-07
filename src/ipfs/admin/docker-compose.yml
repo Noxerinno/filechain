@@ -21,7 +21,16 @@ networks:
     basic:
 
 services: 
+  ipfs-setup:
+    image: ipfs-setup:latest
+    volumes:
+      - ./setup-image/assets/:/swarmkey/scripts/
+      - ./compose/data/swarmkey/:/swarmkey/key/
+    command: sh -c 'sleep 5'
+
   ipfs:
+    depends_on:
+      - ipfs-setup 
     image: ipfs/go-ipfs:latest
     volumes:
       - ./compose/data/ipfs:/data/ipfs
@@ -38,7 +47,8 @@ services:
       - "5001:5001"
     
   ipfs-cluster:
-    depends_on: 
+    depends_on:
+      - ipfs-setup 
       - ipfs
     image: ipfs/ipfs-cluster:latest
     volumes: 
