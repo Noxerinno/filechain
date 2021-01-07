@@ -24,9 +24,11 @@ services:
   ipfs-setup:
     image: ipfs-setup:latest
     volumes:
-      - ./setup-image/assets/:/swarmkey/scripts/
+      - ./setup-image/assets/:/scripts/
       - ./compose/data/swarmkey/:/swarmkey/key/
-    command: sh -c 'sleep 5'
+      - ./compose/data/config-files/:/jq/config-files/ 
+    command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'
+    #restart: always
 
   ipfs:
     depends_on:

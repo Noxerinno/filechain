@@ -16,6 +16,5 @@
 
 # ==============================================================================
 
-
-/swarmkey/ipfs-swarm-key-gen > /swarmkey/key/swarm.key
-sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' /swarmkey/key/swarm.key 1>/dev/null
+/jq/jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
+/jq/jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
