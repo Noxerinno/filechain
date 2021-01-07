@@ -26,9 +26,9 @@ services:
     volumes:
       - ./setup-image/assets/:/scripts/
       - ./compose/data/swarmkey/:/swarmkey/key/
-      - ./compose/data/config-files/:/jq/config-files/ 
+      - ./compose/data/config-files/:/jq/config-files/
     command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'
-    #restart: always
+    restart: always
 
   ipfs:
     depends_on:

@@ -29,5 +29,6 @@ clean :
 	docker-compose down
 	# docker volume rm admin_ipfs_data
 	# docker volume rm admin_ipfs-cluster_data
-	sudo rm -rf ./compose/data/
+	#docker container stop $(docker ps -aq) 2>/dev/null
+	sudo rm -rdf ./compose/data/
 	docker system prune

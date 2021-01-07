@@ -36,9 +36,8 @@ IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
 #Generating swarmkey
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/gen-key.sh"
 cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "rm /swarmkey/key/swarm.key"
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
-docker stop $IPFS_SETUP_CONT_ID
-docker rm $IPFS_SETUP_CONT_ID
 #echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
 
@@ -104,4 +103,6 @@ echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
 
 #Shutting down setup container
-docker exec -it $IPFS_SETUP_CONT_ID sh -c "kill -9 `pgrep -f iwillsurvive.sh`"
+#docker exec -it $IPFS_SETUP_CONT_ID sh -c "kill -9 `pgrep -f iwillsurvive.sh`"
+docker container stop $IPFS_SETUP_CONT_ID
+docker container rm $IPFS_SETUP_CONT_ID

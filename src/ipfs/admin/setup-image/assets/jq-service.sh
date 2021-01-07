@@ -16,5 +16,7 @@
 
 # ==============================================================================
 
+chmod u+x /jq/config-files/service.json
+chown root:root /jq/config-files/service.json
 /jq/jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
 /jq/jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json

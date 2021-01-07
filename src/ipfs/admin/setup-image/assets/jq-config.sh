@@ -16,6 +16,8 @@
 
 # ==============================================================================
 
+chmod u+x /jq/config-files/config
+
 /jq/jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > /jq/config-files/config
 /jq/jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' /jq/config-files/config > tmp && mv tmp /jq/config-files/config
 /jq/jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' /jq/config-files/config > tmp && mv tmp /jq/config-files/config
