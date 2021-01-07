@@ -20,7 +20,7 @@ services:
     image: hyperledger/fabric-peer
     environment:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hf-ca-poc_default
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=hyperledger_default #Must correspond to the network name (By default it correponds to "<ROOT_FOLDER>_DEFAULT" in which the container is launched)
       - FABRIC_LOGGING_SPEC=DEBUG
       - CORE_PEER_TLS_ENABLED=false
       - CORE_PEER_GOSSIP_USELEADERELECTION=true

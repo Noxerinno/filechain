@@ -11,6 +11,43 @@ import (
 type SimpleContract struct {
     contractapi.Contract
 }
+
+func (t *SimpleContract) Init(ctx contractapi.TransactionContextInterface, state string) error {
+	fmt.Println("helloBlock initialization")
+	var err error
+	fmt.Printf("State %s", state)
+	// Write the initialized state to the ledger
+	err = ctx.GetStub().PutState(state, []byte(state))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *SimpleContract) Invoke(ctx contractapi.TransactionContextInterface, state string) error {
+	var err error
+	// Get the state from the ledger
+	statebytes, err := ctx.GetStub().GetState(state)
+	if err != nil {
+		return fmt.Errorf("Cannot get state")
+	}
+	if statebytes == nil {
+		return fmt.Errorf("No state found")
+	}
+
+	fmt.Printf("State %s", state)
+
+	// Write the state back to the ledger
+	err = ctx.GetStub().PutState(state, []byte(state))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
 // Create adds a new key with value to the world state
 func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, key string, value string) error {
     existing, err := ctx.GetStub().GetState(key)
