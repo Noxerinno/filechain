@@ -22,6 +22,6 @@ CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-peer channel join -b $CHANNEL_NAME.block  >&log.txt
+peer channel join -b ./$CHANNEL_NAME.block  >&log.txt
 
 cat log.txt
