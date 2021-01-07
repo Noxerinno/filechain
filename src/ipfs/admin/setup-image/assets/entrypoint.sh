@@ -1,3 +1,5 @@
+#! /usr/bin/env sh
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +15,6 @@
 # limitations under the License.
 
 # ==============================================================================
-
-#! /usr/bin/env sh
 
 # Where are we going to mount the remote bucket resource in our container.
 DEST=${AWS_S3_MOUNT:-/opt/s3fs/bucket}

@@ -24,32 +24,33 @@ IPFS_ADMIN_DIR=$FILECHAIN_ROOT/src/ipfs/admin
 
 export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
-#Build du conteneur de génération de la swarmkey
+#Swarkey's generator container build
 echo "Building swarmkey container..."
-docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
+docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null 2>/dev/null
 
-#Démarrage de la stack
+#Loading stack
+#chmod u+x -R $IPFS_ADMIN_DIR/setup-image/assets/
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-setup
 IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
 
-#Génération de la swarmkey
-docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/scripts/gen-key.sh"
+#Generating swarmkey
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/gen-key.sh"
 cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
 docker stop $IPFS_SETUP_CONT_ID
 docker rm $IPFS_SETUP_CONT_ID
-echo $SWARMKEY
+#echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
 
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs ipfs-cluster
 
-#Récupération des ID des conteneurs
+#Retreive containers ID
 IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
 IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
 echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
 
 
-#Vérification du démarrage du conteneur IPFS
+#Checking IPFS container status
 IPFS_IS_UP=$(docker exec $IPFS_CONT_ID ls /data/ipfs | grep api)
 WAITING="Waiting for IPFS to start"
 while [ "$IPFS_IS_UP" != "api" ]
@@ -82,26 +83,25 @@ echo "Restarting IPFS container"
 docker exec -it $IPFS_CONT_ID pkill ipfs
 echo "Done with setting private network"
 
+
 # IPFS Cluster
-
+#Modifying service.json with jq on the setup container
 echo "Setting service.json"
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/service.json 
-jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
-jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
-docker cp $IPFS_ADMIN_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
-rm $IPFS_ADMIN_DIR/service.json
+docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/compose/data/config-files/service.json 
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/jq-service.sh"
+docker cp $IPFS_ADMIN_DIR/compose/data/config-files/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
+rm $IPFS_ADMIN_DIR/compose/data/config-files/service.json
 
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/identity.json 
-PEERID=$(cat $IPFS_ADMIN_DIR/identity.json | jq '.id')
+
+docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/compose/data/config-files/identity.json 
+PEERID=$(cat $IPFS_ADMIN_DIR/compose/data/config-files/identity.json | jq '.id')
 PEERID=$(echo $PEERID | cut -d '"' -f 2)
-rm $IPFS_ADMIN_DIR/identity.json
+rm $IPFS_ADMIN_DIR/compose/data/config-files/identity.json
 
-jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > $FILECHAIN_ROOT/src/ipfs/mix/config
-jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
-jq --arg SWARM "$SWARMKEY" '.SwarmKey=$SWARM' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
-jq --arg NODEID "$NODEID" '.IpfsId=$NODEID' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
-jq --arg CLUSTER_SECRET "$CLUSTER_SECRET" '.ClusterSecret=$CLUSTER_SECRET' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
-jq --arg PEERID "$PEERID" '.ClusterPeerId=$PEERID' $FILECHAIN_ROOT/src/ipfs/mix/config > tmp && mv tmp $FILECHAIN_ROOT/src/ipfs/mix/config
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/jq-config.sh"
 
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
+
+#Shutting down setup container
+docker exec -it $IPFS_SETUP_CONT_ID sh -c "kill -9 `pgrep -f iwillsurvive.sh`"
