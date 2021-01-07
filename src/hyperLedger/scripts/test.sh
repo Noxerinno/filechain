@@ -58,5 +58,3 @@ peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALU
 
 peer chaincode invoke -n simple-contract -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1
 #peer chaincode invoke -n "simple-contract" -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
-
-

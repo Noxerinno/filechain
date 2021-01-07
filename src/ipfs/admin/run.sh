@@ -14,14 +14,22 @@
 
 # ==============================================================================
 
+
 #!/bin/bash
 
-# export PATH=$PWD/bin:$PATH
-export FABRIC_CFG_PATH=${PWD}
-echo "Genetating certs for ordering service"
-./bin/cryptogen generate --config=./crypto-config.yaml
+# Initiate private network
+# generate swarm file
 
-echo "Generate artifacts for channel"
-mkdir -p channel-artifacts
-./bin/configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID testchainid
-./bin/configtxgen -profile Channel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
+winpty docker run -it --rm \
+    --device /dev/fuse \
+    --cap-add SYS_ADMIN \
+    --security-opt "apparmor=unconfined" \
+    --env "AWS_S3_BUCKET=heroku-polls-user" \
+    --env "AWS_S3_ACCESS_KEY_ID=AKIAWUFYU45RSPJGHIZK" \
+    --env "AWS_S3_SECRET_ACCESS_KEY=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" \
+    --env UID=$(id -u) \
+    --env GID=$(id -g) \
+    -v /mnt/tmp:/opt/s3fs/bucket:rshared \
+    efrecon/s3fs
+	
+read -p "Press any key to finish ..."

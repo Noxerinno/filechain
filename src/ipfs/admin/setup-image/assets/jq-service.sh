@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +16,5 @@
 
 # ==============================================================================
 
-#!/bin/bash
-
-# export PATH=$PWD/bin:$PATH
-export FABRIC_CFG_PATH=${PWD}
-echo "Genetating certs for ordering service"
-./bin/cryptogen generate --config=./crypto-config.yaml
-
-echo "Generate artifacts for channel"
-mkdir -p channel-artifacts
-./bin/configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block -channelID testchainid
-./bin/configtxgen -profile Channel -outputCreateChannelTx ./channel-artifacts/channel1.tx -channelID channel1
+/jq/jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
+/jq/jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json

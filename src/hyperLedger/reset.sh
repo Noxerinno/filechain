@@ -13,15 +13,27 @@
 # limitations under the License.
 
 # ==============================================================================
+#!/bin/bash
 
-docker rm -f $(docker ps -aq)
-docker volume prune
-sudo rm -r certsICA/
+unameOut="$(uname -s)"
+case "${unameOut}" in
+    Linux*)     docker="docker";;
+    Darwin*)    docker="docker";;
+    CYGWIN*)    docker="winpty docker";;
+    MINGW*)     docker="winpty docker";;
+    *)          docker="docker"
+esac
 
-sudo rm -r crypto-config
+CONTAINERS_ID=$(docker ps -aq)
 
-sudo rm -r msp
+$docker rm -f $CONTAINERS_ID
+$docker volume prune
 
-sudo rm -r channel-artifacts
+rm -r crypto-config
 
+rm -r msp
+
+rm -r channel-artifacts
+
+read -p "Press any key to finish ..."
 

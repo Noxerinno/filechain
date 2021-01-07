@@ -21,7 +21,18 @@ networks:
     basic:
 
 services: 
+  ipfs-setup:
+    image: ipfs-setup:latest
+    volumes:
+      - ./setup-image/assets/:/scripts/
+      - ./compose/data/swarmkey/:/swarmkey/key/
+      - ./compose/data/config-files/:/jq/config-files/ 
+    command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'
+    #restart: always
+
   ipfs:
+    depends_on:
+      - ipfs-setup 
     image: ipfs/go-ipfs:latest
     volumes:
       - ./compose/data/ipfs:/data/ipfs
@@ -38,7 +49,8 @@ services:
       - "5001:5001"
     
   ipfs-cluster:
-    depends_on: 
+    depends_on:
+      - ipfs-setup 
       - ipfs
     image: ipfs/ipfs-cluster:latest
     volumes: 

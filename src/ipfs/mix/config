@@ -1,7 +1,0 @@
-{
-  "IpfsId": "12D3KooWDDLFuMpX8bVfq4oho1duMy6xAHU8M81vAHP82w4R1XDD",
-  "AdminIpAddress": "172.22.0.2",
-  "SwarmKey": "/key/swarm/psk/1.0.0/\\n/base16/\\n2486de53f7c3ed0ab0726104f960bc0c7aab756f74876b49ce02b42f08165551",
-  "ClusterSecret": "d81d0f9c01e36d2f9baf4c20a33b724483270c52fb8ae6fe3bd5309f5cb9d0bb",
-  "ClusterPeerId": "12D3KooWLckA8ELmH9apTsLoU3hv4jfBXyf3FgdCBahL6qe95dJz"
-}

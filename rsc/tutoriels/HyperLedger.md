@@ -115,6 +115,3 @@ Pour lancer le réśeau on utilise le fichier *script.sh* (ou *script_alternate.
 [Chaincode]:https://hyperledger-fabric.readthedocs.io/en/latest/glossary.html#chaincode
 [Peer]:https://hyperledger-fabric.readthedocs.io/en/release-2.2/peers/peers.html
 [Orderer]: https://hyperledger-fabric.readthedocs.io/en/release-2.2/orderer/ordering_service.html
-
-
-
