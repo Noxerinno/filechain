@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +31,7 @@ docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
 #Démarrage de la stack
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-setup
 IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
+
 #Génération de la swarmkey
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/scripts/gen-key.sh"
 cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
