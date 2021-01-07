@@ -52,11 +52,11 @@ peer lifecycle chaincode checkcommitreadiness --channelID channel1 --name "simpl
 
 peer lifecycle chaincode commit -o orderer0.org1.example.com:7050 --channelID channel1 --name "simple-contract" --version 1.0 --sequence 1 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051 --signature-policy "OR('Org1MSP.peer','Org2MSP.peer')"
 #peer lifecycle chaincode querycommitted --channelID channel1 --name "simple-contract" --cafile $ORDERER_CA
-#peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1
-peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
-peer chaincode invoke -n "simple-contract" -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
-#peer chaincode install -n mycontract2 -v 0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02 >&log.txt
 
-#peer chaincode instantiate -n mycc -v 0 -c '{"Args":[]}' -C channel1
-#peer chaincode install -p ../examples/chaincode/go/chaincode_example02 -n mycc -v 0
+peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1
+#peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
+
+peer chaincode invoke -n simple-contract -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1
+#peer chaincode invoke -n "simple-contract" -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
+
 
