@@ -35,5 +35,13 @@ rm -r msp
 
 rm -r channel-artifacts
 
+rm channel1.block
+
+rm text.txt
+
+rm log.txt
+
+rm simple-contract.tar.gz
+
 read -p "Press any key to finish ..."
 
