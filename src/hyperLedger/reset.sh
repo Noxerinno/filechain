@@ -35,5 +35,7 @@ rm -r msp
 
 rm -r channel-artifacts
 
+rm channel1.block
+
 read -p "Press any key to finish ..."
 

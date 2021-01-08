@@ -35,12 +35,12 @@ read -p "Press any key to continue (install chaincode org1) ..."
 peer lifecycle chaincode install simple-contract.tar.gz --peerAddresses ${IP_PEER_ORG1}:7051
 read -p "Press any key to continue (queryinstalled chaincode org1) ..."
 #STEP 3 CHECK IF INSTALLED
-touch test.txt
+touch text.txt
 peer lifecycle chaincode queryinstalled > text.txt
 export PACKAGE_ID=$(cat text.txt | grep  "Package ID" | cut -d' ' -f3 | sed 's/.$//')
 read -p "Press any key to continue (approveformyorg approve $PACKAGE_ID org1) ..."
 #STEP 3 APPROVE CHAINCODE ON ORG1
-peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID channel1 --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.peer','Org2MSP.peer')"
+peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID channel1 --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
 
 ###########################
 # Installing in peer Org2 #
@@ -52,19 +52,22 @@ export CORE_PEER_LOCALMSPID="Org2MSP"
 #peer lifecycle chaincode package simple-contract.tar.gz --path $CHAINCODE_SOURCES_PATH --lang golang --label simple-contract_1.0
 read -p "Press any key to continue (install chaincode org2) ..."
 peer lifecycle chaincode install simple-contract.tar.gz
-#touch test.txt
+#touch text.txt
 #peer lifecycle chaincode queryinstalled > text.txt
 #export PACKAGE_ID=$(cat text.txt | grep  "Package ID" | cut -d' ' -f3 | sed 's/.$//')
 read -p "Press any key to continue (approveformyorg approve $PACKAGE_ID org2) ..."
-peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID channel1 --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.peer','Org2MSP.peer')"
+peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID channel1 --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
 read -p "Press any key to continue (check commit readiness) ..."
-peer lifecycle chaincode checkcommitreadiness --channelID channel1 --name "simple-contract" --version 1.0 --cafile $ORDERER_CA --output json --sequence 1 --signature-policy "OR('Org1MSP.peer','Org2MSP.peer')"
+peer lifecycle chaincode checkcommitreadiness --channelID channel1 --name "simple-contract" --version 1.0 --cafile $ORDERER_CA --output json --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
 read -p "Press any key to continue (commit chainecode) ..."
-peer lifecycle chaincode commit -o orderer0.org1.example.com:7050 --channelID channel1 --name "simple-contract" --version 1.0 --sequence 1 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051 --signature-policy "OR('Org1MSP.peer','Org2MSP.peer')"
+peer lifecycle chaincode commit -o orderer0.org1.example.com:7050 --channelID channel1 --name "simple-contract" --version 1.0 --sequence 1 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
 #peer lifecycle chaincode querycommitted --channelID channel1 --name "simple-contract" --cafile $ORDERER_CA
 read -p "Press any key to continue (invoke Create) ..."
-peer chaincode invoke -n simple-contract -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C channel1 -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile /opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org2.example.com/ca/ca-cert.pem -c '{"Args":["Create", "KEY_1", "VALUE_1"]}'
+#peer chaincode invoke -n simple-contract -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1
 #peer chaincode invoke -n "simple-contract" -c '{"Args":["Create", "KEY_1", "VALUE_1"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
 read -p "Press any key to continue (invoke Update) ..."
-peer chaincode invoke -n simple-contract -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C channel1 -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile /opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org2.example.com/ca/ca-cert.pem -c '{"Args":["Update", "KEY_1", "VALUE_2"]}'
 #peer chaincode invoke -n "simple-contract" -c '{"Args":["Update", "KEY_1", "VALUE_2"]}' -C channel1 -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051
+read -p "Press any key to continue (query Read) ..."
+peer chaincode query -n simple-contract -c '{"Args":["Read", "KEY_1"]}' -C channel1
