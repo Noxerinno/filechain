@@ -133,7 +133,7 @@ Channel: &ChannelDefaults
             Rule: "MAJORITY Endorsement"
         Endorsement:
             Type: ImplicitMeta
-            Rule: "MAJORITY Endorsement"
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ChannelCapabilities
 Profiles:

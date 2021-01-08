@@ -87,13 +87,14 @@ services:
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
       - IP_PEER_ORG1=${IP_PEER_ORG1}
       - IP_PEER_ORG2=${IP_PEER_ORG2}
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/filechain
     volumes:
         - /var/run/:/host/var/run/
-        - ./chaincodes/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
-        - ./crypto-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-        - ./scripts/:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
-        - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+        #- ./chaincodes/:/opt/gopath/src/github.com/hyperledger/fabric/examples/chaincode/go
+        #- ./crypto-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        #- ./scripts/:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+        #- ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+        - ./:/opt/gopath/src/github.com/hyperledger/fabric/filechain
     depends_on:
       - orderer0.org1.example.com
       - orderer0.org2.example.com

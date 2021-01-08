@@ -11,8 +11,9 @@ import (
 type SimpleContract struct {
     contractapi.Contract
 }
-
+/*
 func (t *SimpleContract) Init(ctx contractapi.TransactionContextInterface, state string) error {
+	
 	fmt.Println("helloBlock initialization")
 	var err error
 	fmt.Printf("State %s", state)
@@ -23,9 +24,11 @@ func (t *SimpleContract) Init(ctx contractapi.TransactionContextInterface, state
 	}
 
 	return nil
+	
 }
 
 func (t *SimpleContract) Invoke(ctx contractapi.TransactionContextInterface, state string) error {
+
 	var err error
 	// Get the state from the ledger
 	statebytes, err := ctx.GetStub().GetState(state)
@@ -45,8 +48,9 @@ func (t *SimpleContract) Invoke(ctx contractapi.TransactionContextInterface, sta
 	}
 
 	return nil
-}
 
+}
+*/
 
 // Create adds a new key with value to the world state
 func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, key string, value string) error {

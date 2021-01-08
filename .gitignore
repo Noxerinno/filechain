@@ -5,3 +5,8 @@ certsICA/
 msp/
 crypto-config/
 channel-artifacts/
+src/hyperLedger/log.txt
+src/hyperLedger/channel1.block
+src/hyperLedger/simple-contract.tar.gz
+src/hyperLedger/test.txt
+src/hyperLedger/text.txt
