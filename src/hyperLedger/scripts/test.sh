@@ -57,6 +57,7 @@ peer lifecycle chaincode install simple-contract.tar.gz
 #export PACKAGE_ID=$(cat text.txt | grep  "Package ID" | cut -d' ' -f3 | sed 's/.$//')
 read -p "Press any key to continue (approveformyorg approve $PACKAGE_ID org2) ..."
 peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID channel1 --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
+
 read -p "Press any key to continue (check commit readiness) ..."
 peer lifecycle chaincode checkcommitreadiness --channelID channel1 --name "simple-contract" --version 1.0 --cafile $ORDERER_CA --output json --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
 read -p "Press any key to continue (commit chainecode) ..."

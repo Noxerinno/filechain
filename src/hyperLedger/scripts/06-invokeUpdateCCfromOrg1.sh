@@ -14,14 +14,15 @@
 
 # ==============================================================================
 
-ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/tls/MyCertificate.crt
+ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com.crt.pem
 CORE_PEER_LOCALMSPID="Org1MSP"
-# En este certificado me contecto al peer
-CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/tlsca.org1.example.com.crt.pem
+# CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com.crt.pem
+ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/ca/ca-cert.pem
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 CORE_PEER_ADDRESS=${IP_PEER_ORG1}:7051
 CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
+ORDERER_SYSCHAN_ID=syschain
 
-peer chaincode invoke -o orderer0.org1.example.com:7050   -C $CHANNEL_NAME -n mycontract2 -c '{"Args":["invoke","a","b","10"]}' >&log.txt
-cat log.txt
+read -p "Press any key to continue (invoke Update) ..."
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "KEY_1", "VALUE_2"]}'

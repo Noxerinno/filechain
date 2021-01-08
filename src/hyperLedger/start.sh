@@ -80,22 +80,25 @@ sleep 10
 echo "Org2 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
 sleep 10
-#echo "Installing hyperledger go stuff"
-#docker exec -it cli sh -c "go get github.com/hyperledger/fabric-chaincode-go/shim"
+#$docker exec -it cli sh -c "./scripts/test.sh"
 #sleep 10
-$docker exec -it cli sh -c "./scripts/test.sh"
-#sleep 10
-#echo "Installing CC Org1"
-#docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
-#sleep 10
-#echo "Instancing CC Org1"
-#docker exec -it cli sh -c "./scripts/04-instanciateCCorg1.sh"
-#sleep 10
-#echo "Invoking CC Org1"
-#docker exec -it cli sh -c "./scripts/05-invokeCCorg1.sh"
-#sleep 10
-#echo "Querying CC Org1"
-#docker exec -it cli sh -c "./scripts/06-queryCCorg1.sh"
+echo "Installing CC Org1"
+docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
+sleep 5
+echo "Installing CC Org2"
+docker exec -it cli sh -c "./scripts/03-installCCorg2.sh"
+sleep 5
+echo "Commiting CC from Org1"
+docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
+sleep 5
+echo "Creating CC from Org1"
+docker exec -it cli sh -c "./scripts/05-invokeCreateCCfromOrg1.sh"
+sleep 2
+echo "Updating CC from Org1"
+docker exec -it cli sh -c "./scripts/06-invokeUpdateCCfromOrg1.sh"
+sleep 2
+echo "Querying CC from Org2"
+docker exec -it cli sh -c "./scripts/07-queryCCorg2.sh"
 
 
 read -p "Press any key to finish ..."
