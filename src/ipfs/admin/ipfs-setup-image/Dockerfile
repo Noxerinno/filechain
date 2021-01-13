@@ -6,9 +6,6 @@ RUN go get github.com/Kubuxu/go-ipfs-swarm-key-gen/ipfs-swarm-key-gen
 FROM golang:alpine
 
 COPY --from=build /go/bin/ipfs-swarm-key-gen /swarmkey/
-RUN mkdir /jq/
-RUN wget -O /jq/jq https://www.github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 1>/dev/null
-RUN chmod u+x /jq/jq
 
 
 # FROM golang:alpine

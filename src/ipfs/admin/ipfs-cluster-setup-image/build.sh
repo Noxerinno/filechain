@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
@@ -16,7 +16,12 @@
 
 # ==============================================================================
 
-chmod u+x /jq/config-files/service.json
-chown root:root /jq/config-files/service.json
-/jq/jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
-/jq/jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp /jq/config-files/service.json
+
+AWS_ACCESS_KEY_ID= # required unless IAM_ROLE is set
+AWS_SECRET_ACCESS_KEY= # required unless IAM_ROLE is set
+S3_ACL=private # default, optional
+S3_BUCKET= # required
+IAM_ROLE= # optional IAM role name, for usage on EC2.
+
+docker build -t setup-docker-build .
+read -p "Press any key to finish ..."

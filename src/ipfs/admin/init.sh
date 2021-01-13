@@ -24,18 +24,18 @@ IPFS_ADMIN_DIR=$FILECHAIN_ROOT/src/ipfs/admin
 
 export CLUSTER_SECRET=$(od -vN 32 -An -tx1 /dev/urandom | tr -d ' \n')
 
-#Swarkey's generator container build
-echo "Building swarmkey container..."
-docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null 2>/dev/null
+# #Swarkey's generator container build
+# echo "Building swarmkey container..."
+# docker build -t ipfs-setup $IPFS_ADMIN_DIR/ipfs-setup-image/ 1>/dev/null 2>/dev/null
 
-#Loading stack
-#chmod u+x -R $IPFS_ADMIN_DIR/setup-image/assets/
+#Starting IPFS setup container
+chmod u+x -R $IPFS_ADMIN_DIR/ipfs-setup-image/assets/
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-setup
 IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
 
 #Generating swarmkey
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/gen-key.sh"
-cp $IPFS_ADMIN_DIR/compose/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
+cp $IPFS_ADMIN_DIR/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "rm /swarmkey/key/swarm.key"
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
 #echo $SWARMKEY
@@ -82,27 +82,45 @@ echo "Restarting IPFS container"
 docker exec -it $IPFS_CONT_ID pkill ipfs
 echo "Done with setting private network"
 
-
-# IPFS Cluster
-#Modifying service.json with jq on the setup container
-echo "Setting service.json"
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/compose/data/config-files/service.json 
-docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/jq-service.sh"
-docker cp $IPFS_ADMIN_DIR/compose/data/config-files/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
-rm $IPFS_ADMIN_DIR/compose/data/config-files/service.json
-
-
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/compose/data/config-files/identity.json 
-PEERID=$(cat $IPFS_ADMIN_DIR/compose/data/config-files/identity.json | jq '.id')
-PEERID=$(echo $PEERID | cut -d '"' -f 2)
-rm $IPFS_ADMIN_DIR/compose/data/config-files/identity.json
-
-docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/jq-config.sh"
-
-echo "Restarting IPFS Cluster container"
-docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
-
-#Shutting down setup container
-#docker exec -it $IPFS_SETUP_CONT_ID sh -c "kill -9 `pgrep -f iwillsurvive.sh`"
+#Shutting down IPFS setup container
 docker container stop $IPFS_SETUP_CONT_ID
 docker container rm $IPFS_SETUP_CONT_ID
+
+
+# IPFS Cluster
+
+#Starting IPFS Cluster
+chmod u+x -R $IPFS_ADMIN_DIR/ipfs-cluster-setup-image/assets/
+docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-cluster-setup
+IPFS_CLUSTER_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster-setup_1")
+
+#Modifying service.json with jq on the setup container
+echo "Setting service.json"
+#docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/data/config-files/service.json 
+#chown root:root $IPFS_ADMIN_DIR/data/ipfs-cluster/service.json
+#cp $IPFS_ADMIN_DIR/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/data/config-files/service.json
+
+docker exec -it $IPFS_CLUSTER_CONT_ID sh -c 'mv /data/ipfs-cluster/service.json /config-files/'
+# docker exec -it $IPFS_SETUP_CONT_ID sh -c "export IPADDR=$IPADDR"
+docker exec -it $IPFS_CLUSTER_SETUP_CONT_ID sh -c "/scripts/jq-service.sh"
+# docker exec -it $IPFS_CLUSTER_CONT_ID sh -c 'mv /config-files/ /data/ipfs-cluster/service.json '
+# docker exec -it $IPFS_CLUSTER_CONT_ID sh -c 'rm -fd /config-files/'
+
+#docker cp $IPFS_ADMIN_DIR/data/config-files/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
+#rm $IPFS_ADMIN_DIR/data/config-files/service.json
+
+
+#docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/data/config-files/identity.json 
+# cp $IPFS_ADMIN_DIR/data/ipfs-cluster/identity.json  $IPFS_ADMIN_DIR/data/config-files/identity.json 
+# PEERID=$(cat $IPFS_ADMIN_DIR/data/config-files/identity.json | jq '.id')
+# PEERID=$(echo $PEERID | cut -d '"' -f 2)
+# #rm $IPFS_ADMIN_DIR/data/config-files/identity.json
+
+# docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/jq-config.sh"
+
+# echo "Restarting IPFS Cluster container"
+# docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
+
+#Shutting down IPFS setup container
+docker container stop $IPFS_CLUSTER_SETUP_CONT_ID
+docker container rm $IPFS_CLUSTER_SETUP_CONT_ID

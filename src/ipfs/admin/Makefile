@@ -16,19 +16,20 @@
 
 
 all : clean
-	# docker-compose up -d 
-	# python3 init.py
-	chmod u+x ./init.sh
-	./init.sh
+	@ # docker-compose up -d 
+	@ # python3 init.py
+	@ chmod u+x ./init.sh
+	@ ./init.sh
 
 restart :
-	docker-compose stop
-	docker-compose start
+	@ docker-compose stop
+	@ docker-compose start
 
 clean :
-	docker-compose down
-	# docker volume rm admin_ipfs_data
-	# docker volume rm admin_ipfs-cluster_data
-	#docker container stop $(docker ps -aq) 2>/dev/null
-	sudo rm -rdf ./compose/data/
-	docker system prune
+	@ docker-compose down
+	@ # docker volume rm admin_ipfs_data
+	@ # docker volume rm admin_ipfs-cluster_data
+	@ # docker container stop $(docker ps -aq) 2>/dev/null
+	@ sudo rm -rdf ./compose/data/
+	@ docker system prune
+	@ # docker image rm ipfs-setup 1>/dev/null
