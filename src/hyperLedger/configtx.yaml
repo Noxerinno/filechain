@@ -51,7 +51,7 @@ Organizations:
         AnchorPeers:
             - Host: peer0.org2.example.com
               Port: 8051
-            - Host: orderer0.org1.example.com
+            - Host: orderer0.org2.example.com
               Port: 8050
 Capabilities:
     Channel: &ChannelCapabilities
@@ -128,6 +128,12 @@ Channel: &ChannelDefaults
         Admins:
             Type: ImplicitMeta
             Rule: "MAJORITY Admins"
+        LifecycleEndorsement:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Endorsement"
+        Endorsement:
+            Type: ImplicitMeta
+            Rule: "ANY Endorsement"
     Capabilities:
         <<: *ChannelCapabilities
 Profiles:

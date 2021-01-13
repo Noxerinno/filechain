@@ -15,12 +15,17 @@
 # ==============================================================================
 #!/bin/bash
 
+# This first step of the script allows to define on which OS we are, and take necessary actions
 unameOut="$(uname -s)"
 case "${unameOut}" in
+	# If we are on Linux use the standard docker command
     Linux*)     docker="docker";;
+	# If we are on Mac OS use the standard docker command
     Darwin*)    docker="docker";;
+	# If we are on Windows is winpty in front of the docker command
     CYGWIN*)    docker="winpty docker";;
     MINGW*)     docker="winpty docker";;
+	# In any other case, just use the docker command
     *)          docker="docker"
 esac
 docker-compose -f docker-compose-ca.yaml up -d ca.root.example.com
@@ -74,5 +79,26 @@ $docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
 sleep 10
 echo "Org2 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
+sleep 10
+#$docker exec -it cli sh -c "./scripts/test.sh"
+#sleep 10
+echo "Installing CC Org1"
+docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
+sleep 5
+echo "Installing CC Org2"
+docker exec -it cli sh -c "./scripts/03-installCCorg2.sh"
+sleep 5
+echo "Commiting CC from Org1"
+docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
+sleep 5
+echo "Creating CC from Org1"
+docker exec -it cli sh -c "./scripts/05-invokeCreateCCfromOrg1.sh"
+sleep 2
+echo "Updating CC from Org1"
+docker exec -it cli sh -c "./scripts/06-invokeUpdateCCfromOrg1.sh"
+sleep 2
+echo "Querying CC from Org2"
+docker exec -it cli sh -c "./scripts/07-queryCCorg2.sh"
+
 
 read -p "Press any key to finish ..."
