@@ -26,12 +26,12 @@ export CLUSTER_SECRET=$(jq '.ClusterSecret' $FILCHAIN_ROOT/src/ipfs/mix/config)
 CLUSTER_SECRET=${CLUSTER_SECRET#"\""}
 CLUSTER_SECRET=${CLUSTER_SECRET%"\""}
 
-docker-compose -f $FILCHAIN_ROOT/src/ipfs/client/docker-compose.yml up -d
+docker-compose -f $IPFS_CLIENT_DIR/docker-compose.yml up -d
 
-IPFS_CONT_ID=$(docker ps -aqf "name=client_ipfs_1")
-IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=client_ipfs-cluster_1")
-IPFS_CONT_ID_ADMIN=$(docker ps -aqf "name=admin_ipfs_1")
-IPFS_CLUSTER_CONT_ID_ADMIN=$(docker ps -aqf "name=admin_ipfs-cluster_1")
+IPFS_CONT_ID=$(docker ps -aqf "name=^client_ipfs1$")
+IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=^client_cluster1$")
+IPFS_CONT_ID_ADMIN=$(docker ps -aqf "name=^admin_ipfs$")
+IPFS_CLUSTER_CONT_ID_ADMIN=$(docker ps -aqf "name=^admin_cluster$")
 
 ADMINIP=$(jq '.AdminIpAddress' $FILCHAIN_ROOT/src/ipfs/mix/config)
 ADMINIP=${ADMINIP#"\""}
@@ -76,15 +76,15 @@ docker exec -it $IPFS_CONT_ID pkill ipfs
 echo "Done with setting private network"
 
 # IPFS Cluster
-echo "Setting service.json"
-IPADDR=$(docker exec -it $IPFS_CONT_ID ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
-echo $IPADDR
+# echo "Setting service.json"
+# IPADDR=$(docker exec -it $IPFS_CONT_ID ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')
+# echo $IPADDR
 
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_CLIENT_DIR/service.json 
-jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_CLIENT_DIR/service.json  > tmp && mv tmp $IPFS_CLIENT_DIR/service.json
-jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_CLIENT_DIR/service.json  > tmp && mv tmp $IPFS_CLIENT_DIR/service.json
-docker cp $IPFS_CLIENT_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
-rm $IPFS_CLIENT_DIR/service.json
+# # docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_CLIENT_DIR/service.json 
+# # jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_CLIENT_DIR/service.json  > tmp && mv tmp $IPFS_CLIENT_DIR/service.json
+# # jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_CLIENT_DIR/service.json  > tmp && mv tmp $IPFS_CLIENT_DIR/service.json
+# # docker cp $IPFS_CLIENT_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
+# # rm $IPFS_CLIENT_DIR/service.json
 
-echo "Restarting IPFS Cluster container"
-docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
+# echo "Restarting IPFS Cluster container"
+# docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs
