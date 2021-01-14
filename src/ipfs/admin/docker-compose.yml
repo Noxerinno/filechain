@@ -29,6 +29,7 @@ services:
     command: sh -c 'sleep 5'
 
   ipfs:
+    container_name: admin_ipfs
     depends_on:
       - ipfs-setup 
     image: ipfs/go-ipfs:latest
@@ -37,16 +38,19 @@ services:
       # - ipfs_data:/data/ipfs
     restart: always
     environment:
+      # - IPFS_BOOTSTRAP_RM_ALL="true"
       - IPFS_SWARM_KEY=${SWARMKEY}
       - SWARM_KEY_PERM=0400
-      - LIBP2P_FORCE_PNET=1
+      # - LIBP2P_FORCE_PNET=1
     networks:
       - basic
     ports:
       - "4001:4001"
       - "5001:5001"
+      - "8080:8080"
     
   ipfs-cluster:
+    container_name: admin_cluster
     depends_on:
       - ipfs-setup 
       - ipfs
@@ -56,12 +60,13 @@ services:
       #- ipfs-cluster_data
     restart: always
     environment: 
-      - CLUSTER_PEERNAME=admin
-      # - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs0/tcp/5001
-      # - CLUSTER_CRDT_TRUSTEDPEERS=* # Trust all peers in Cluster
-      # - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
+      - CLUSTER_PEERNAME=admin_cluster
+      - CLUSTER_IPFSHTTP_NODEMULTIADDRESS=/dns4/ipfs/tcp/5001
+      # - CLUSTER_CRDT_TRUSTEDPEERS='*' # Trust all peers in Cluster
+      - CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS=/ip4/0.0.0.0/tcp/9094 # Expose API
       - CLUSTER_MONITORPINGINTERVAL=2s # Speed up peer discovery
       - CLUSTER_SECRET=${CLUSTER_SECRET} # From shell variable if set
+      # - IPFS_BOOTSTRAP_RM_ALL="true"
     networks:
       - basic
     ports:

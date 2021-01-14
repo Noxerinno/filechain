@@ -30,7 +30,7 @@ docker build -t ipfs-setup $IPFS_ADMIN_DIR/setup-image/ 1>/dev/null
 
 #Démarrage de la stack
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-setup
-IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=admin_ipfs-setup_1")
+IPFS_SETUP_CONT_ID=$(docker ps -aqf "name=^admin_ipfs-setup_1$")
 
 #Génération de la swarmkey
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "/swarmkey/scripts/gen-key.sh"
@@ -44,8 +44,8 @@ echo "Key generated and stored in swarm.key"
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs ipfs-cluster
 
 #Récupération des ID des conteneurs
-IPFS_CONT_ID=$(docker ps -aqf "name=admin_ipfs_1")
-IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=admin_ipfs-cluster_1")
+IPFS_CONT_ID=$(docker ps -aqf "name=^admin_ipfs$")
+IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=^admin_cluster$")
 echo "Containers $IPFS_SETUP_CONT_ID, $IPFS_CONT_ID and $IPFS_CLUSTER_CONT_ID are starting..."
 
 
@@ -66,7 +66,7 @@ echo "Setting API Access Control"
 docker exec $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://0.0.0.0:5001", "http://localhost:3000", "http://127.0.0.1:5001", "https://webui.ipfs.io"]'
 docker exec $IPFS_CONT_ID ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["PUT", "POST"]'
 
-# set bootstrap to admin node only
+set bootstrap to admin node only
 echo "Deleting default bootstrap"
 docker exec -it $IPFS_CONT_ID ipfs bootstrap rm --all
 
@@ -84,12 +84,12 @@ echo "Done with setting private network"
 
 # IPFS Cluster
 
-echo "Setting service.json"
-docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/service.json 
-jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
-jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
-docker cp $IPFS_ADMIN_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
-rm $IPFS_ADMIN_DIR/service.json
+# echo "Setting service.json"
+# docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/service.json $IPFS_ADMIN_DIR/service.json 
+# jq --arg IPADDR "$IPADDR" '.ipfs_connector.ipfshttp.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
+# jq --arg IPADDR "$IPADDR" '.api.ipfsproxy.node_multiaddress="/ip4/"+$IPADDR+"/tcp/5001"' $IPFS_ADMIN_DIR/service.json  > tmp && mv tmp $IPFS_ADMIN_DIR/service.json
+# docker cp $IPFS_ADMIN_DIR/service.json admin_ipfs-cluster_1:/data/ipfs-cluster/service.json
+# rm $IPFS_ADMIN_DIR/service.json
 
 docker cp $IPFS_CLUSTER_CONT_ID:/data/ipfs-cluster/identity.json $IPFS_ADMIN_DIR/identity.json 
 PEERID=$(cat $IPFS_ADMIN_DIR/identity.json | jq '.id')
