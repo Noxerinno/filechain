@@ -26,7 +26,7 @@ ORDERER_SYSCHAN_ID=syschain
 
 
 
-read -p "Press any key to continue (check commit readiness) ..."
+#read -p "Press any key to continue (check commit readiness) ..."
 peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name "simple-contract" --version 1.0 --cafile $ORDERER_CA --output json --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
-read -p "Press any key to continue (commit chainecode) ..."
+#read -p "Press any key to continue (commit chainecode) ..."
 peer lifecycle chaincode commit -o orderer0.org1.example.com:7050 --channelID $CHANNEL_NAME --name "simple-contract" --version 1.0 --sequence 1 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"

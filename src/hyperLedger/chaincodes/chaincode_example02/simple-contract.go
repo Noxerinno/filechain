@@ -176,6 +176,7 @@ func (sc *SimpleContract) Read(ctx contractapi.TransactionContextInterface, key 
     return string(existing), nil
 }
 
+// ReadAll returns all the value in the world state
 func (sc *SimpleContract) ReadAll(ctx contractapi.TransactionContextInterface) ([]adminConfig, error) {
     startKey := ""
 	endKey := ""
@@ -203,4 +204,26 @@ func (sc *SimpleContract) ReadAll(ctx contractapi.TransactionContextInterface) (
 	}
 
 	return results, nil
+}
+
+func (sc *SimpleContract) Delete(ctx contractapi.TransactionContextInterface, key string) error {
+	
+
+	existing, err := ctx.GetStub().GetState(key)
+
+    if err != nil {
+        return errors.New("Unable to interact with world state")
+    }
+
+    if existing == nil {
+        return fmt.Errorf("Cannot read world state pair with key %s. Does not exist", key)
+    }
+
+	// Delete the key from the state in ledger
+	err = ctx.GetStub().DelState(key)
+	if err != nil {
+		return fmt.Errorf("Failed to delete state")
+	}
+
+	return nil
 }
