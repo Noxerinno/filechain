@@ -1,8 +1,25 @@
+// Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
+
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+
+//     https://www.apache.org/licenses/LICENSE-2.0
+
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// ==============================================================================
+
 package main
 
 import (
     "errors"
     "fmt"
+	"encoding/json"
 
     "github.com/hyperledger/fabric-contract-api-go/contractapi"
 )
@@ -10,6 +27,14 @@ import (
 // SimpleContract contract for handling writing and reading from the world state
 type SimpleContract struct {
     contractapi.Contract
+}
+
+type adminConfig struct {
+	IpfsId         string `json:"IpfsId"` 
+	AdminIpAddress string `json:"AdminIpAddress"`    
+	SwarmKey       string `json:"SwarmKey"`
+	ClusterSecret  string `json:"ClusterSecret"`
+	ClusterPeerId  string `json:"ClusterPeerId"`
 }
 /*
 func (t *SimpleContract) Init(ctx contractapi.TransactionContextInterface, state string) error {
@@ -53,28 +78,54 @@ func (t *SimpleContract) Invoke(ctx contractapi.TransactionContextInterface, sta
 */
 
 // Create adds a new key with value to the world state
-func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, key string, value string) error {
-    existing, err := ctx.GetStub().GetState(key)
+func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, IpfsId string, 
+    AdminIpAddress string, SwarmKey string, ClusterSecret string, ClusterPeerId string) error {
+    var err error
 
-    if err != nil {
-        return errors.New("Unable to interact with world state")
-    }
 
-    if existing != nil {
-        return fmt.Errorf("Cannot create world state pair with key %s. Already exists", key)
-    }
+    adminConfig :=new(adminConfig)
+	adminConfig.IpfsId = IpfsId
+	adminConfig.AdminIpAddress = AdminIpAddress
+	adminConfig.SwarmKey = SwarmKey
+    adminConfig.ClusterSecret = ClusterSecret
+    adminConfig.ClusterPeerId = ClusterPeerId
+    
 
-    err = ctx.GetStub().PutState(key, []byte(value))
+	// ==== Check if adminConfig already exists ====
+	adminConfigAsBytes, err := ctx.GetStub().GetState(IpfsId)
+	if err != nil {
+		return fmt.Errorf("Failed to get adminConfig: " + err.Error())
+	} else if adminConfigAsBytes != nil {
+		fmt.Println("This adminConfig already exists: " + IpfsId)
+		return fmt.Errorf("This adminConfig already exists: " + IpfsId)
+	}
 
-    if err != nil {
-        return errors.New("Unable to interact with world state")
-    }
+    // ==== Create adminConfig object and marshal to JSON ====
 
-    return nil
+	adminConfigJSONasBytes, err := json.Marshal(adminConfig)
+	if err != nil {
+		return fmt.Errorf(err.Error())
+	}
+	//Alternatively, build the adminConfig json string manually if you don't want to use struct marshalling
+	//adminConfigJSONasString := `{"IpfsId":"` + IpfsId + `",  "AdminIpAddress": "` + AdminIpAddress + `", "SwarmKey": "` + SwarmKey + `", "ClusterSecret": "` + ClusterSecret + `", "ClusterPeerId" : "` + ClusterPeerId + `"}`
+	//adminConfigJSONasBytes := []byte(str)
+
+	// === Save adminConfig to state ===
+	err = ctx.GetStub().PutState(IpfsId, adminConfigJSONasBytes)
+	if err != nil {
+		return fmt.Errorf(err.Error())
+	}
+
+	// ==== adminConfig saved and indexed. Return success ====
+	fmt.Println("- end init adminConfig")
+	return nil
 }
 
 // Update changes the value with key in the world state
-func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, key string, value string) error {
+func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, key string, IpfsId string, 
+    AdminIpAddress string, SwarmKey string, ClusterSecret string, ClusterPeerId string) error {
+    
+
     existing, err := ctx.GetStub().GetState(key)
 
     if err != nil {
@@ -85,7 +136,23 @@ func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, ke
         return fmt.Errorf("Cannot update world state pair with key %s. Does not exist", key)
     }
 
-    err = ctx.GetStub().PutState(key, []byte(value))
+    if key!=IpfsId{
+        return fmt.Errorf("Cannot change key value in parameters. Current key is %s", key) 
+    }
+
+    adminConfig :=new(adminConfig)
+	adminConfig.IpfsId = IpfsId
+	adminConfig.AdminIpAddress = AdminIpAddress
+	adminConfig.SwarmKey = SwarmKey
+    adminConfig.ClusterSecret = ClusterSecret
+    adminConfig.ClusterPeerId = ClusterPeerId
+
+    adminConfigJSONasBytes, err := json.Marshal(adminConfig)
+	if err != nil {
+		return fmt.Errorf(err.Error())
+	}
+
+    err = ctx.GetStub().PutState(key, adminConfigJSONasBytes)
 
     if err != nil {
         return errors.New("Unable to interact with world state")
@@ -107,4 +174,33 @@ func (sc *SimpleContract) Read(ctx contractapi.TransactionContextInterface, key 
     }
 
     return string(existing), nil
+}
+
+func (sc *SimpleContract) ReadAll(ctx contractapi.TransactionContextInterface) ([]adminConfig, error) {
+    startKey := ""
+	endKey := ""
+
+	resultsIterator, err := ctx.GetStub().GetStateByRange(startKey, endKey)
+
+	if err != nil {
+		return nil, err
+	}
+	defer resultsIterator.Close()
+
+	results := []adminConfig{}
+
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+
+		if err != nil {
+			return nil, err
+		}
+
+		adminConfig := new(adminConfig)
+        _ = json.Unmarshal(queryResponse.Value, adminConfig)
+        
+		results = append(results, *adminConfig)
+	}
+
+	return results, nil
 }

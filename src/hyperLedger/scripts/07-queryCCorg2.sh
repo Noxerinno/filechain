@@ -24,4 +24,6 @@ CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
 read -p "Press any key to continue (query Read) ..."
-peer chaincode query -n simple-contract -c '{"Args":["Read", "KEY_1"]}' -C $CHANNEL_NAME
+peer chaincode query -n simple-contract -c '{"Args":["Read", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv"]}' -C $CHANNEL_NAME
+sleep 10
+peer chaincode query -n simple-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME
