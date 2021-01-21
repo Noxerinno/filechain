@@ -27,16 +27,16 @@ ORDERER_SYSCHAN_ID=syschain
 
 
 #STEP 1 PACKAGE THE SOURCE CODE
-read -p "Press any key to continue (package chaincode org1) ..."
+#read -p "Press any key to continue (package chaincode org1) ..."
 peer lifecycle chaincode package simple-contract.tar.gz --path $CHAINCODE_SOURCES_PATH --lang golang --label simple-contract_1.0
 #STEP 2 INSTALL THE PACKAGE IN PEER ORG1
-read -p "Press any key to continue (install chaincode org1) ..."
+#read -p "Press any key to continue (install chaincode org1) ..."
 peer lifecycle chaincode install simple-contract.tar.gz --peerAddresses $CORE_PEER_ADDRESS
-read -p "Press any key to continue (queryinstalled chaincode org1) ..."
+#read -p "Press any key to continue (queryinstalled chaincode org1) ..."
 #STEP 3 CHECK IF INSTALLED
 touch text.txt
 peer lifecycle chaincode queryinstalled > text.txt
 export PACKAGE_ID=$(cat text.txt | grep  "Package ID" | cut -d' ' -f3 | sed 's/.$//')
-read -p "Press any key to continue (approveformyorg approve $PACKAGE_ID org1) ..."
+#read -p "Press any key to continue (approveformyorg approve $PACKAGE_ID org1) ..."
 #STEP 3 APPROVE CHAINCODE ON ORG1
 peer lifecycle chaincode approveformyorg -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name "simple-contract" --version 1.0 --package-id $PACKAGE_ID --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')"
