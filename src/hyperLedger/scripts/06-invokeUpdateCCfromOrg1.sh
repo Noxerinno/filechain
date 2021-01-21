@@ -25,4 +25,4 @@ CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
 read -p "Press any key to continue (invoke Update) ..."
-peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "KEY_1", "VALUE_2"]}'
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv", "172.18.0.2","/key/swarm/psk/1.0.0/\\n/base16/\\n4e0ac296473bc1704d3530533ce731508614ef9e7e1bfaf007f293e05175828f","f2ab2bbdf43824c5ebaccd40fc7e3e3438a8c984dc44848c7aead931d9522d5a","12D3KooWRAgBLBMaxhMHn8WgDbGMN8LFvhsS8mia7uDf1q6aAMnN"]}'
