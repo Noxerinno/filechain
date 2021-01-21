@@ -22,20 +22,22 @@ networks:
 
 services: 
   ipfs-setup:
+    container_name: admin_ipfs_setup
     build:
       context: ./ipfs-setup-image/
     image: ipfs-setup:latest
     volumes:
       - ./ipfs-setup-image/assets/:/scripts/
       - ./data/config-files/:/swarmkey/key/
+      - ./data/config-files/:/jq/config-files/
+      - ./data/ipfs-cluster/:/jq/ipfs-files/
     command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'
     restart: always
 
   ipfs-cluster-setup:
+    container_name: admin_cluster_setup
     build:
       context: ./ipfs-cluster-setup-image/
-      args:
-        IPADDR: ${IPADDR}
     image: ipfs-cluster-setup:latest
     volumes:
       - ./ipfs-cluster-setup-image/assets/:/scripts/
@@ -44,6 +46,10 @@ services:
     restart: always
     environment:
       - IPADDR=${IPADDR}
+      - SWARMKEY=${SWARMKEY}
+      - NODEID=${NODEID}
+      - CLUSTER_SECRET=${CLUSTER_SECRET}
+      - PEERID=${PEERID}
 
   ipfs:
     container_name: admin_ipfs
