@@ -73,32 +73,24 @@ sleep 10
 echo "exec in cli"
 echo "Creation channel"
 $docker exec -it cli sh -c "./scripts/01-createchannel.sh"
-sleep 10
 echo "Org1 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
-sleep 10
 echo "Org2 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
-sleep 10
-#$docker exec -it cli sh -c "./scripts/test.sh"
-#sleep 10
 echo "Installing CC Org1"
 docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
-sleep 5
 echo "Installing CC Org2"
 docker exec -it cli sh -c "./scripts/03-installCCorg2.sh"
-sleep 5
 echo "Commiting CC from Org1"
 docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
-sleep 5
 echo "Creating CC from Org1"
-docker exec -it cli sh -c "./scripts/05-invokeCreateCCfromOrg1.sh"
-sleep 2
+docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh "1" "2" "3" "4" "5"'
+sleep 5
 echo "Updating CC from Org1"
-docker exec -it cli sh -c "./scripts/06-invokeUpdateCCfromOrg1.sh"
-sleep 2
+docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" "1" "8" "3" "4" "5"'
 echo "Querying CC from Org2"
-docker exec -it cli sh -c "./scripts/07-queryCCorg2.sh"
+sleep 5
+docker exec -it cli sh -c "./scripts/07-queryReadAllCCorg2.sh"
 
 
 read -p "Press any key to finish ..."
