@@ -14,6 +14,8 @@
 
 # ==============================================================================
 
+# 6 arguments are required in the following order : IpfsId AdminIpAddress SwarmKey ClusterSecret CLusterPeerId
+
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com.crt.pem
 CORE_PEER_LOCALMSPID="Org1MSP"
 # CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com.crt.pem
@@ -24,5 +26,17 @@ CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
+if [ "$#" -ne 6 ]; then
+    echo "Illegal number of parameters. 6 arguments required."
+    exit 1
+fi
+
+Key=$1
+IpfsId=$2
+AdminIpAddress=$3
+SwarmKey=$4
+ClusterSecret=$5
+ClusterPeerId=$6
+
 #read -p "Press any key to continue (invoke Update) ..."
-peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv", "172.18.0.2","/key/swarm/psk/1.0.0/\\n/base16/\\n4e0ac296473bc1704d3530533ce731508614ef9e7e1bfaf007f293e05175828f","f2ab2bbdf43824c5ebaccd40fc7e3e3438a8c984dc44848c7aead931d9522d5a","12D3KooWRAgBLBMaxhMHn8WgDbGMN8LFvhsS8mia7uDf1q6aAMnN"]}'
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "'${Key}'", "'${IpfsId}'", "'${AdminIpAddress}'", "'${SwarmKey}'", "'${ClusterSecret}'","'${ClusterPeerId}'"]}' 2>/dev/null
