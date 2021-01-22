@@ -85,9 +85,11 @@ echo "Commiting CC from Org1"
 docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
 echo "Creating CC from Org1"
 docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh "1" "2" "3" "4" "5"'
+sleep 5
 echo "Updating CC from Org1"
 docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" "1" "8" "3" "4" "5"'
 echo "Querying CC from Org2"
+sleep 5
 docker exec -it cli sh -c "./scripts/07-queryReadAllCCorg2.sh"
 
 
