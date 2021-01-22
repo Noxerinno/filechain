@@ -88,7 +88,7 @@ docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh "1" "2" "3" "4
 echo "Updating CC from Org1"
 docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" "1" "8" "3" "4" "5"'
 echo "Querying CC from Org2"
-docker exec -it cli sh -c "./scripts/07-queryCCorg2.sh"
+docker exec -it cli sh -c "./scripts/07-queryReadAllCCorg2.sh"
 
 
 read -p "Press any key to finish ..."
