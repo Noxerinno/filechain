@@ -77,22 +77,42 @@ echo "Org1 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
 echo "Org2 joining channel"
 $docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
-echo "Installing CC Org1"
-docker exec -it cli sh -c "./scripts/03-installCCorg1.sh"
-echo "Installing CC Org2"
-docker exec -it cli sh -c "./scripts/03-installCCorg2.sh"
-echo "Commiting CC from Org1"
-docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
-echo "Creating CC from Org1"
+echo "Installing CC adminConfig Org1"
+docker exec -it cli sh -c "./scripts/03-installCCadminConfigOrg1.sh"
+echo "Installing CC adminConfig Org2"
+docker exec -it cli sh -c "./scripts/03-installCCadminConfigOrg2.sh"
+echo "Commiting CC adminConfig from Org1"
+docker exec -it cli sh -c "./scripts/04-commitCCadminConfigOrg1.sh"
+echo "Creating CC adminConfig from Org1"
 json1="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
 json2="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
-docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh '${json1}
+docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh '${json1}
 sleep 5
-echo "Updating CC from Org1"
-docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" '${json2}
-echo "Querying CC from Org2"
+echo "Updating CC adminConfig from Org1"
+docker exec -it cli sh -c './scripts/06-invokeUpdateCCadminConfigOrg1.sh "1" '${json2}
+echo "Querying CC adminConfig from Org2"
 sleep 5
-docker exec -it cli sh -c "./scripts/07-queryReadAllCCorg2.sh"
+docker exec -it cli sh -c "./scripts/07-queryReadAllCCadminConfigOrg2.sh"
 
+
+echo "Installing CC file Org1"
+docker exec -it cli sh -c "./scripts/03-installCCfileOrg1.sh"
+#read -p "Press any key to finish ..."
+echo "Installing CC file Org2"
+docker exec -it cli sh -c "./scripts/03-installCCfileOrg2.sh"
+#read -p "Press any key to finish ..."
+echo "Commiting CC file from Org1"
+docker exec -it cli sh -c "./scripts/04-commitCCfileOrg1.sh"
+#read -p "Press any key to finish ..."
+echo "Creating CC file from Org1"
+json3="{\\\\\\\"main_hash\\\\\\\":\\\\\\\"QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3\\\\\\\",\\\\\\\"filename\\\\\\\":\\\\\\\"monimage.jpg\\\\\\\",\\\\\\\"timestamp\\\\\\\":123456978656498463,\\\\\\\"mime-type\\\\\\\":\\\\\\\"image/jpeg\\\\\\\",\\\\\\\"shards\\\\\\\":[{\\\\\\\"hash\\\\\\\":\\\\\\\"QmXrPn23q8yyQxTrhEwTy9pbBafE2V7VsEn49DywWDPy4e\\\\\\\",\\\\\\\"position\\\\\\\":0},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmaWTDDNwDHXh5zhgq8rHVhqYX9mZzbyuPRKqosFkxwYWn\\\\\\\",\\\\\\\"position\\\\\\\":2},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmcPJDCz2tdcRMehXRZMxyGABw7RChmMCHJxgdrAKdbGTm\\\\\\\",\\\\\\\"position\\\\\\\":1}]}"
+json4="{\\\\\\\"main_hash\\\\\\\":\\\\\\\"QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3\\\\\\\",\\\\\\\"filename\\\\\\\":\\\\\\\"monim age2.jpg\\\\\\\",\\\\\\\"timestamp\\\\\\\":123456978656498463,\\\\\\\"mime-type\\\\\\\":\\\\\\\"image/jpeg\\\\\\\",\\\\\\\"shards\\\\\\\":[{\\\\\\\"hash\\\\\\\":\\\\\\\"QmXrPn23q8yyQxTrhEwTy9pbBafE2V7VsEn49DywWDPy4e\\\\\\\",\\\\\\\"position\\\\\\\":0},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmaWTDDNwDHXh5zhgq8rHVhqYX9mZzbyuPRKqosFkxwYWn\\\\\\\",\\\\\\\"position\\\\\\\":2},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmcPJDCz2tdcRMehXRZMxyGABw7RChmMCHJxgdrAKdbGTm\\\\\\\",\\\\\\\"position\\\\\\\":1}]}"
+docker exec -it cli sh -c './scripts/05-invokeCreateCCfileOrg1.sh '${json3}
+sleep 5
+echo "Updating CC file from Org1"
+docker exec -it cli sh -c './scripts/06-invokeUpdateCCfileOrg1.sh "QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3" '${json4}
+echo "Querying CC file from Org2"
+sleep 5
+docker exec -it cli sh -c "./scripts/07-queryReadAllCCfileOrg2.sh"
 
 read -p "Press any key to finish ..."

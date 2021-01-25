@@ -43,5 +43,7 @@ rm log.txt
 
 rm adminConfig-contract.tar.gz
 
+rm file-contract.tar.gz
+
 read -p "Press any key to finish ..."
 
