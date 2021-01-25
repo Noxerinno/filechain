@@ -12,3 +12,5 @@ src/hyperLedger/test.txt
 src/hyperLedger/text.txt
 src/hyperLedger/chaincodes/chaincode_example02/contract-tutorial
 src/hyperLedger/chaincodes/chaincode_example02/vendor
+src/hyperLedger/channel-artifacts/*
+src/hyperLedger/crypto-config/*

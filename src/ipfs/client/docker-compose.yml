@@ -27,7 +27,7 @@ services:
     container_name: client_ipfs1
     image: ipfs/go-ipfs:latest
     volumes:
-      - ./compose/data/ipfs:/data/ipfs
+      - ./data/ipfs:/data/ipfs
     restart: always
     environment:
       - IPFS_SWARM_KEY=${SWARMKEY}
@@ -45,7 +45,7 @@ services:
       - ipfs
     image: ipfs/ipfs-cluster
     volumes: 
-      - ./compose/data/ipfs-cluster:/data/ipfs-cluster
+      - ./data/ipfs-cluster:/data/ipfs-cluster
     restart: always
     environment: 
       - CLUSTER_PEERNAME=client1

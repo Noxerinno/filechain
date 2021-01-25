@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +14,21 @@
 
 # ==============================================================================
 
+ROOT = $(shell pwd)
 
-AWS_ACCESS_KEY_ID= # required unless IAM_ROLE is set
-AWS_SECRET_ACCESS_KEY= # required unless IAM_ROLE is set
-S3_ACL=private # default, optional
-S3_BUCKET= # required
-IAM_ROLE= # optional IAM role name, for usage on EC2.
+all : clean
+	@ chmod u+x $(ROOT)/src/ipfs/admin/init.sh
+	@ $(ROOT)/src/ipfs/admin/init.sh
 
-docker build -t setup-docker-build .
-read -p "Press any key to finish ..."
+restart :
+	@ docker-compose stop
+	@ docker-compose start
+
+clean :
+	@ docker-compose down -v
+	@ sudo rm -rdf $(ROOT)/src/ipfs/*/data/
+	@ docker container prune
+
+mrproper : clean
+	@ docker system prune 
+	@ docker image rm ipfs/goipfs ipfs/ipfs-cluster ipfs-setup ipfs-cluster-setup

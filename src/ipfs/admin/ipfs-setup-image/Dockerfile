@@ -7,6 +7,7 @@ FROM golang:alpine
 
 RUN mkdir /jq/
 COPY --from=build /go/bin/ipfs-swarm-key-gen /swarmkey/
+RUN mkdir /swarmkey/key/
 RUN wget -O /jq/jq https://www.github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 1>/dev/null
 RUN chmod u+x /jq/jq
 
