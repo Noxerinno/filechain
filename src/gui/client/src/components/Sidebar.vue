@@ -22,6 +22,10 @@
 							<font-awesome-icon :icon="['fas', 'hdd']" size="lg" class="mx-5"/>
 							Storage
 						</router-link>
+						<router-link exact class="group flex items-center px-2 py-2 text-lg leading-6 font-medium rounded-md text-opacity-75 text-white hover:text-opacity-100 hover:bg-black hover:bg-opacity-20" to="/settings">
+							<font-awesome-icon :icon="['fas', 'cog']" size="lg" class="mx-5"/>
+							Settings
+						</router-link>
 					</div>
 				</nav>
 			</div>

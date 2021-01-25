@@ -3,6 +3,7 @@ const createClient = require('ipfs-http-client');
 const cors = require('cors')
 const multer = require('multer')
 const execSync = require('child_process').execSync;
+const fs = require('fs');
 // const multiaddr = require('multiaddr')
 
 const client = createClient();
@@ -25,6 +26,13 @@ app.get("/api/get/ipfs-id", (req, res) => {
 		res.send(err);
 		console.error(err)
 	})
+})
+
+// get path
+app.get("/api/get/path", (req, res) => {
+	let rawdata = fs.readFileSync('data/db.json');
+	let db = JSON.parse(rawdata);
+	res.send({path: db.path})
 })
 
 // get ipfs data
@@ -74,6 +82,22 @@ app.post("/api/upload", upload.array('files', 10), async function(req, res) {
 	await uploadFunction(req).then((data) => {
 		return res.json({content: data});
 	});
+})
+
+//submit path
+app.post("/api/submitPath", (req, res) => {
+	console.log(req.body.path);
+	const result = execSync(`[ -d \"${req.body.path}\" ] && echo \"True\" || echo \"False\"`, { encoding: 'utf8'});
+	console.log(result);
+	if (result.toString() == "True\n") {
+		let rawdata = fs.readFileSync('data/db.json');
+		let db = JSON.parse(rawdata);
+		db.path = req.body.path;
+		let data = JSON.stringify(db);
+		fs.writeFileSync('data/db.json', data);
+		return res.json({valid: true});
+	}
+	return res.json({valid: false});
 })
 
 // var sockets = []
