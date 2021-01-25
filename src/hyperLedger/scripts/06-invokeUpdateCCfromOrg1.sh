@@ -14,7 +14,7 @@
 
 # ==============================================================================
 
-# 6 arguments are required in the following order : IpfsId AdminIpAddress SwarmKey ClusterSecret CLusterPeerId
+# 2 arguments are required in the following order : Key and the json containing all the info about the AdminConfig
 
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com.crt.pem
 CORE_PEER_LOCALMSPID="Org1MSP"
@@ -26,17 +26,13 @@ CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-if [ "$#" -ne 6 ]; then
-    echo "Illegal number of parameters. 6 arguments required."
+if [ "$#" -ne 2 ]; then
+    echo "Illegal number of parameters. 2 arguments required."
     exit 1
 fi
 
 Key=$1
-IpfsId=$2
-AdminIpAddress=$3
-SwarmKey=$4
-ClusterSecret=$5
-ClusterPeerId=$6
+json=$2
 
 #read -p "Press any key to continue (invoke Update) ..."
-peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n simple-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "'${Key}'", "'${IpfsId}'", "'${AdminIpAddress}'", "'${SwarmKey}'", "'${ClusterSecret}'","'${ClusterPeerId}'"]}' 2>/dev/null
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n adminConfig-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG1_CA -c '{"Args":["Update", "'${Key}'", "'${json}'"]}' #2>/dev/null

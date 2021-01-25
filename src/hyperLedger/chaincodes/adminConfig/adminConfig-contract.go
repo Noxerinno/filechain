@@ -78,26 +78,33 @@ func (t *SimpleContract) Invoke(ctx contractapi.TransactionContextInterface, sta
 */
 
 // Create adds a new key with value to the world state
-func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, IpfsId string, 
-    AdminIpAddress string, SwarmKey string, ClusterSecret string, ClusterPeerId string) error {
+func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, jsonString adminConfig) error {
     var err error
 
-
-    adminConfig :=new(adminConfig)
-	adminConfig.IpfsId = IpfsId
-	adminConfig.AdminIpAddress = AdminIpAddress
-	adminConfig.SwarmKey = SwarmKey
-    adminConfig.ClusterSecret = ClusterSecret
-    adminConfig.ClusterPeerId = ClusterPeerId
-    
+	adminConfig :=jsonString
+	if adminConfig.IpfsId == ""{
+		return fmt.Errorf("There is no IpfsId specified")
+	}
+	if adminConfig.AdminIpAddress == ""{
+		return fmt.Errorf("There is no AdminIpAddress specified")
+	}
+	if adminConfig.SwarmKey == ""{
+		return fmt.Errorf("There is no SwarmKey specified")
+	}
+	if adminConfig.ClusterSecret == ""{
+		return fmt.Errorf("There is no ClusterSecret specified")
+	}
+	if adminConfig.ClusterPeerId == ""{
+		return fmt.Errorf("There is no ClusterPeerId specified")
+	}
 
 	// ==== Check if adminConfig already exists ====
-	adminConfigAsBytes, err := ctx.GetStub().GetState(IpfsId)
+	adminConfigAsBytes, err := ctx.GetStub().GetState(adminConfig.IpfsId)
 	if err != nil {
 		return fmt.Errorf("Failed to get adminConfig: " + err.Error())
 	} else if adminConfigAsBytes != nil {
-		fmt.Println("This adminConfig already exists: " + IpfsId)
-		return fmt.Errorf("This adminConfig already exists: " + IpfsId)
+		fmt.Println("This adminConfig already exists: " + adminConfig.IpfsId)
+		return fmt.Errorf("This adminConfig already exists: " + adminConfig.IpfsId)
 	}
 
     // ==== Create adminConfig object and marshal to JSON ====
@@ -111,7 +118,7 @@ func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, Ip
 	//adminConfigJSONasBytes := []byte(str)
 
 	// === Save adminConfig to state ===
-	err = ctx.GetStub().PutState(IpfsId, adminConfigJSONasBytes)
+	err = ctx.GetStub().PutState(adminConfig.IpfsId, adminConfigJSONasBytes)
 	if err != nil {
 		return fmt.Errorf(err.Error())
 	}
@@ -122,8 +129,7 @@ func (sc *SimpleContract) Create(ctx contractapi.TransactionContextInterface, Ip
 }
 
 // Update changes the value with key in the world state
-func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, key string, IpfsId string, 
-    AdminIpAddress string, SwarmKey string, ClusterSecret string, ClusterPeerId string) error {
+func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, key string, jsonString adminConfig) error {
     
 
     existing, err := ctx.GetStub().GetState(key)
@@ -134,18 +140,28 @@ func (sc *SimpleContract) Update(ctx contractapi.TransactionContextInterface, ke
 
     if existing == nil {
         return fmt.Errorf("Cannot update world state pair with key %s. Does not exist", key)
-    }
+	}
+	
+	adminConfig :=jsonString
+	if adminConfig.IpfsId == ""{
+		return fmt.Errorf("There is no IpfsId specified")
+	}
+	if adminConfig.AdminIpAddress == ""{
+		return fmt.Errorf("There is no AdminIpAddress specified")
+	}
+	if adminConfig.SwarmKey == ""{
+		return fmt.Errorf("There is no SwarmKey specified")
+	}
+	if adminConfig.ClusterSecret == ""{
+		return fmt.Errorf("There is no ClusterSecret specified")
+	}
+	if adminConfig.ClusterPeerId == ""{
+		return fmt.Errorf("There is no ClusterPeerId specified")
+	}
 
-    if key!=IpfsId{
+    if key!=adminConfig.IpfsId{
         return fmt.Errorf("Cannot change key value in parameters. Current key is %s", key) 
     }
-
-    adminConfig :=new(adminConfig)
-	adminConfig.IpfsId = IpfsId
-	adminConfig.AdminIpAddress = AdminIpAddress
-	adminConfig.SwarmKey = SwarmKey
-    adminConfig.ClusterSecret = ClusterSecret
-    adminConfig.ClusterPeerId = ClusterPeerId
 
     adminConfigJSONasBytes, err := json.Marshal(adminConfig)
 	if err != nil {

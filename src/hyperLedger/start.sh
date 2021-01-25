@@ -84,10 +84,12 @@ docker exec -it cli sh -c "./scripts/03-installCCorg2.sh"
 echo "Commiting CC from Org1"
 docker exec -it cli sh -c "./scripts/04-commitCCfromOrg1.sh"
 echo "Creating CC from Org1"
-docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh "1" "2" "3" "4" "5"'
+json1="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
+json2="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
+docker exec -it cli sh -c './scripts/05-invokeCreateCCfromOrg1.sh '${json1}
 sleep 5
 echo "Updating CC from Org1"
-docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" "1" "8" "3" "4" "5"'
+docker exec -it cli sh -c './scripts/06-invokeUpdateCCfromOrg1.sh "1" '${json2}
 echo "Querying CC from Org2"
 sleep 5
 docker exec -it cli sh -c "./scripts/07-queryReadAllCCorg2.sh"
