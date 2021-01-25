@@ -15,7 +15,8 @@
     "express-fileupload": "^1.2.1",
     "ipfs-cluster-api": "0.0.9",
     "ipfs-http-client": "^48.2.2",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "socket.io": "^3.1.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

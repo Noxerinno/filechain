@@ -6,21 +6,21 @@
 					<img class="w-auto" :src="require('@/assets/logo.png')" alt="Logo">
 				</div>
 				<div>
-					<div class="select-none mx-8 p-1 text-opacity-100 text-center rounded-md" :class="classes.connection"><span>IPFS {{this.id ? "connected to" : "disconnected from"}} network</span></div>	
+					<div class="select-none mx-10 p-1 text-opacity-100 text-center rounded-md" :class="classes.connection">
+						<div class="flex items-center justify-center">
+							<font-awesome-icon :icon="['fas', 'signal']" size="xs" class="mr-3" :class="classes.connection"/>
+							<span>IPFS {{this.id ? "connected to" : "disconnected from"}} network</span>
+						</div>
+					</div>	
 				</div>
 				<nav class="mt-5 flex-1 flex flex-col overflow-y-auto" aria-label="Sidebar">
-					<div class="px-2 space-y-1">
+					<div class="px-5 space-y-1">
 						<router-link exact class="group flex items-center px-2 py-2 text-lg leading-6 font-medium rounded-md text-opacity-75 text-white hover:text-opacity-100 hover:bg-black hover:bg-opacity-20" to="/">
-							<i class="ml-4 mr-4 text-opacity-70 text-white"></i>
-							Dashboard
+							<font-awesome-icon :icon="['fas', 'tachometer-alt']" size="lg" class="mx-5"/>Dashboard
 						</router-link>
 						<router-link exact class="group flex items-center px-2 py-2 text-lg leading-6 font-medium rounded-md text-opacity-75 text-white hover:text-opacity-100 hover:bg-black hover:bg-opacity-20" to="/storage">
-							<i class="ml-4 mr-4 text-opacity-70 text-white"></i>
+							<font-awesome-icon :icon="['fas', 'hdd']" size="lg" class="mx-5"/>
 							Storage
-						</router-link>
-						<router-link exact class="group flex items-center px-2 py-2 text-lg leading-6 font-medium rounded-md text-opacity-75 text-white hover:text-opacity-100 hover:bg-black hover:bg-opacity-20" to="/drive">
-							<i class="ml-4 mr-4 text-opacity-70 text-white"></i>
-							File Tracker
 						</router-link>
 					</div>
 				</nav>
@@ -42,7 +42,8 @@ export default {
 	computed: {
 		classes() {
 			return {
-				connection: this.id ? "text-green-700 bg-green-400" : "text-red-700 bg-red-400"
+				connection: this.id ? "text-green-700 bg-green-400" : "text-red-700 bg-red-400",
+				signal: this.id ? "text-green-700" : "text-red-700"
 			}
 		}
 	},

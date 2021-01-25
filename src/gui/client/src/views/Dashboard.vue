@@ -81,7 +81,6 @@ export default {
 		async getIpfsData() {
 			const res = await fetch("http://localhost:3000/api/get/ipfs-data");
 			const data = await res.json();
-			console.log(data);
 			if (res.status == 200 && !data.errno)
 				this.data = data;
 			else
