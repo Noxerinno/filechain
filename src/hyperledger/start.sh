@@ -32,8 +32,7 @@ esac
 pwd 
 docker-compose -f docker-compose-ca.yaml up -d ca.root.example.com
 sleep 1
-export IP_ROOT=$(docker inspect -f '{.
-{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ca.root.example.com)
+export IP_ROOT=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ca.root.example.com)
 echo ${IP_ROOT}
 sleep 10
 docker-compose -f docker-compose-ca.yaml up -d ca-cli

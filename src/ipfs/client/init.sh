@@ -19,7 +19,9 @@
 FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
 IPFS_CLIENT_DIR=$FILCHAIN_ROOT/src/ipfs/client
 
+#echo "/key/swarm/psk/1.0.0/\n/base16/\n650c6c43451ac4c2053cec09f1eaadde0ea9e5bf5bec45cf7263fe0c0bd6438e" > $IPFS_CLIENT_DIR/swarm.key
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/swarm.key)
+echo $SWARMKEY
 
 
 export CLUSTER_SECRET=$(jq '.ClusterSecret' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/config)
