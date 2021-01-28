@@ -23,11 +23,7 @@ CONTAINER_JQ="jq-image"
 
 # timestamp() {
 #   date +"%T" # current time
-# }
-
-# get_mime_type(val) {
-# 	file --mime-type val 
-# }
+# }*
 
 # Check if correct number of argument
 if [ $# -ne 1 ]
@@ -48,8 +44,11 @@ docker cp $1 $CONTAINER:/home/
 FILENAME=$(basename $1)
 echo "$FILENAME"
 
-# Getting file type
+# Getting the file type
 TYPE=$(file --mime-type $1 | cut -d ":" -f2 | cut -c 2-)
+
+# Getting the timestamp
+TIMESTAMP=$(date +"%T")
 
 # get the main hash for the file
 PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
