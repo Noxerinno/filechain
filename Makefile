@@ -17,9 +17,9 @@
 ROOT = $(shell pwd)
 
 all : clean
-	@ $(ROOT)/src/hyperledger/start.sh 
-	@ $(ROOT)/src/ipfs/admin/init.sh
-	@ $(ROOT)/src/ipfs/admin/init.sh
+	@ cd $(ROOT)/src/hyperledger; $(ROOT)/src/hyperledger/start.sh 
+	@ cd $(ROOT)/src/ipfs/admin; $(ROOT)/src/ipfs/admin/init.sh
+	@ cd $(ROOT)/src/ipfs/client; $(ROOT)/src/ipfs/client/init.sh
 
 restart :
 	@ docker-compose stop

@@ -115,5 +115,5 @@ echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs 1>/dev/null 2>/dev/null
 
 
-#Starting unification
-bash $FILECHAIN_ROOT/src/unification.sh
+json="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"${NODEID}\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"${IPADDR}\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"${SWARMKEY}\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"${CLUSTER_SECRET}\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"${PEERID}\\\\\\\"}"
+docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh ' ${json}
