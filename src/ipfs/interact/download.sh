@@ -16,7 +16,7 @@
 
 # ==============================================================================
 CONTAINER="admin_ipfs"
-SORTED=$(jq '.shards|=sort_by(.position)' my.json)
+SORTED=$(echo "$1" | jq '.shards|=sort_by(.position)')
 # Check if correct number of arguments
 if [ $# -ne 3 ]
 then

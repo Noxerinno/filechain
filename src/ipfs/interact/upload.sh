@@ -46,10 +46,10 @@ echo "$FILENAME"
 
 # Getting the file type
 TYPE=$(file --mime-type $1 | cut -d ":" -f2 | cut -c 2-)
-
+echo $TYPE
 # Getting the timestamp
 TIMESTAMP=$(date +"%T")
-
+echo $TIMESTAMP
 # get the main hash for the file
 PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
 echo $PREFIX
@@ -78,8 +78,7 @@ jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --arg TIMESTAMP "$TIMESTAMP
 	"timestamp": $TIMESTAMP,
 	"mime-type": $TYPE,
 	"shards": []
-}' > ./shards.json
-
+}' > shards.json
 # add all shards to ipfs + creating the list
 > ./list.txt
 CNT=0
@@ -91,14 +90,13 @@ do
 	CNT=$(($CNT+1))
 
 	# Adding shards' info to shard list
-	jq --arg HASH "$HASH" --arg CNT "$CNT" -n '.data.shards += [{
+	jq --arg HASH "$HASH" --argjson CNT "$CNT" '.shards |= . + [{
 		"hash": $HASH,
 		"position": $CNT
-	}]' > ./shards.json
-
+	}]' shards.json > tmp.json && mv tmp.json shards.json
 	echo -ne $WAITING'\r'
 	WAITING+='.'
-done # < "shards.txt"
+done < "shards.txt"
 echo -ne "\n"
 echo "Uploaded"
 
