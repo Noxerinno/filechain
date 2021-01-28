@@ -1,0 +1,20 @@
+{
+  "main_hash": "QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3",
+  "filename": "monimage.jpg",
+  "timestamp": 123456978656498460,
+  "mime-type": "image/jpeg",
+  "shards": [
+    {
+      "hash": "QmXrPn23q8yyQxTrhEwTy9pbBafE2V7VsEn49DywWDPy4e",
+      "position": 0
+    },
+    {
+      "hash": "QmcPJDCz2tdcRMehXRZMxyGABw7RChmMCHJxgdrAKdbGTm",
+      "position": 1
+    },
+    {
+      "hash": "QmaWTDDNwDHXh5zhgq8rHVhqYX9mZzbyuPRKqosFkxwYWn",
+      "position": 2
+    }
+  ]
+}
