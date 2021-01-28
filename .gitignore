@@ -7,7 +7,8 @@ crypto-config/
 channel-artifacts/
 src/hyperLedger/log.txt
 src/hyperLedger/channel1.block
-src/hyperLedger/simple-contract.tar.gz
+src/hyperLedger/file-contract.tar.gz
+src/hyperLedger/adminConfig-contract.tar.gz
 src/hyperLedger/test.txt
 src/hyperLedger/text.txt
 src/hyperLedger/chaincodes/chaincode_example02/contract-tutorial
