@@ -19,10 +19,12 @@
 FILCHAIN_ROOT=$(git rev-parse --show-toplevel)
 IPFS_CLIENT_DIR=$FILCHAIN_ROOT/src/ipfs/client
 
-export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILCHAIN_ROOT/src/ipfs/mix/swarm.key)
+#echo "/key/swarm/psk/1.0.0/\n/base16/\n650c6c43451ac4c2053cec09f1eaadde0ea9e5bf5bec45cf7263fe0c0bd6438e" > $IPFS_CLIENT_DIR/swarm.key
+export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/swarm.key)
+echo $SWARMKEY
 
 
-export CLUSTER_SECRET=$(jq '.ClusterSecret' $FILCHAIN_ROOT/src/ipfs/mix/config)
+export CLUSTER_SECRET=$(jq '.ClusterSecret' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/config)
 CLUSTER_SECRET=${CLUSTER_SECRET#"\""}
 CLUSTER_SECRET=${CLUSTER_SECRET%"\""}
 
@@ -33,15 +35,15 @@ IPFS_CLUSTER_CONT_ID=$(docker ps -aqf "name=^client_cluster1$")
 IPFS_CONT_ID_ADMIN=$(docker ps -aqf "name=^admin_ipfs$")
 IPFS_CLUSTER_CONT_ID_ADMIN=$(docker ps -aqf "name=^admin_cluster$")
 
-ADMINIP=$(jq '.AdminIpAddress' $FILCHAIN_ROOT/src/ipfs/mix/config)
+ADMINIP=$(jq '.AdminIpAddress' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/config)
 ADMINIP=${ADMINIP#"\""}
 ADMINIP=${ADMINIP%"\""}
 
-ADMINID=$(jq '.IpfsId' $FILCHAIN_ROOT/src/ipfs/mix/config)
+ADMINID=$(jq '.IpfsId' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/config)
 ADMINID=${ADMINID#"\""}
 ADMINID=${ADMINID%"\""}
 
-PEERID=$(jq '.ClusterPeerId' $FILCHAIN_ROOT/src/ipfs/mix/config)
+PEERID=$(jq '.ClusterPeerId' $FILCHAIN_ROOT/src/ipfs/admin/data/config-files/config)
 PEERID=${PEERID#"\""}
 PEERID=${PEERID%"\""}
 
