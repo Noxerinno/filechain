@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,37 +15,8 @@
 # limitations under the License.
 
 # ==============================================================================
-#!/bin/bash
 
-unameOut="$(uname -s)"
-case "${unameOut}" in
-    Linux*)     docker="docker";;
-    Darwin*)    docker="docker";;
-    CYGWIN*)    docker="winpty docker";;
-    MINGW*)     docker="winpty docker";;
-    *)          docker="docker"
-esac
+FILECHAIN_ROOT=$(git rev-parse --show-toplevel)
 
-CONTAINERS_ID=$(docker ps -aq)
-
-$docker rm -f $CONTAINERS_ID
-$docker volume prune
-
-rm -r crypto-config
-
-rm -r msp
-
-rm -r channel-artifacts
-
-rm channel1.block
-
-rm text.txt
-
-rm log.txt
-
-rm adminConfig-contract.tar.gz
-
-rm file-contract.tar.gz
-
-read -p "Press any key to finish ..."
-
+find $FILECHAIN_ROOT/src -type f -iname "*.sh" -exec chmod u+x {} \; 2> /dev/null
+chmod u+x $FILECHAIN_ROOT/src/hyperledger/bin

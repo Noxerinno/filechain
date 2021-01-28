@@ -41,7 +41,7 @@ docker exec -it $IPFS_SETUP_CONT_ID sh -c "/scripts/gen-key.sh" 1>/dev/null 2>/d
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "cp /swarmkey/key/swarm.key /jq/config-files/" 1>/dev/null 2>/dev/null
 #cp $IPFS_ADMIN_DIR/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "rm /swarmkey/key/swarm.key" 1>/dev/null 2>/dev/null
-export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $FILECHAIN_ROOT/src/ipfs/mix/swarm.key)
+export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $IPFS_ADMIN_DIR/data/config-files/swarm.key)
 #echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
 
@@ -104,7 +104,6 @@ docker container rm $IPFS_SETUP_CONT_ID 1>/dev/null 2>/dev/null
 chmod u+x -R $IPFS_ADMIN_DIR/ipfs-cluster-setup-image/assets/
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs-cluster-setup 1>/dev/null 2>/dev/null
 IPFS_CLUSTER_SETUP_CONT_ID=$(docker ps -aqf "name=admin_cluster_setup") 1>/dev/null 2>/dev/null
-
 docker exec -it $IPFS_CLUSTER_SETUP_CONT_ID sh -c '/scripts/jq-config.sh' 1>/dev/null 2>/dev/null
 echo "Config file created"
 
@@ -114,3 +113,7 @@ docker container rm $IPFS_CLUSTER_SETUP_CONT_ID 1>/dev/null 2>/dev/null
 
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs 1>/dev/null 2>/dev/null
+
+
+#Starting unification
+bash $FILECHAIN_ROOT/src/unification.sh

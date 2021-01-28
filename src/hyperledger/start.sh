@@ -28,6 +28,8 @@ case "${unameOut}" in
 	# In any other case, just use the docker command
     *)          docker="docker"
 esac
+
+echo "CC c'est le script"
 docker-compose -f docker-compose-ca.yaml up -d ca.root.example.com
 sleep 1
 export IP_ROOT=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ca.root.example.com)
