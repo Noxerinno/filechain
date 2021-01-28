@@ -42,7 +42,7 @@ docker exec -it $IPFS_SETUP_CONT_ID sh -c "cp /swarmkey/key/swarm.key /jq/config
 #cp $IPFS_ADMIN_DIR/data/swarmkey/swarm.key $FILECHAIN_ROOT/src/ipfs/mix/swarm.key
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "rm /swarmkey/key/swarm.key" 1>/dev/null 2>/dev/null
 export SWARMKEY=$(sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g' $IPFS_ADMIN_DIR/data/config-files/swarm.key)
-#echo $SWARMKEY
+echo $SWARMKEY
 echo "Key generated and stored in swarm.key"
 
 docker-compose -f $IPFS_ADMIN_DIR/docker-compose.yml up -d ipfs ipfs-cluster 1>/dev/null 2>/dev/null
@@ -92,7 +92,8 @@ echo "Done with setting private network"
 # IPFS Cluster
 
 # docker exec -it $IPFS_SETUP_CONT_ID sh -c 'whoami'
-export PEERID=$(docker exec -it $IPFS_SETUP_CONT_ID sh -c "cat /jq/ipfs-files/identity.json | /jq/jq \".id\" | cut -d '\"' -f 2") 1>/dev/null 2>/dev/null
+export PEERID=$(docker exec -it $IPFS_SETUP_CONT_ID sh -c "cat /jq/ipfs-files/identity.json | /jq/jq \".id\" | cut -d '\"' -f 2" | tr -d '\r') 1>/dev/null 2>/dev/null
+
 docker exec -it $IPFS_SETUP_CONT_ID sh -c "cp /jq/ipfs-files/identity.json /jq/config-files/ && " 1>/dev/null 2>/dev/null
 
 #Shutting down IPFS setup container
@@ -114,6 +115,8 @@ docker container rm $IPFS_CLUSTER_SETUP_CONT_ID 1>/dev/null 2>/dev/null
 echo "Restarting IPFS Cluster container"
 docker exec -it $IPFS_CLUSTER_CONT_ID pkill ipfs 1>/dev/null 2>/dev/null
 
-
+SWARMKEY=${SWARMKEY//\n/\\\\\\\n}
+echo $SWARMKEY
 json="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"${NODEID}\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"${IPADDR}\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"${SWARMKEY}\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"${CLUSTER_SECRET}\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"${PEERID}\\\\\\\"}"
-docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh ' ${json}
+echo $json
+docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh '${json}

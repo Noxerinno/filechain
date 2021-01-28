@@ -116,5 +116,5 @@ docker exec -it cli sh -c "./scripts/04-commitCCfileOrg1.sh"
 #echo "Querying CC file from Org2"
 #sleep 5
 #docker exec -it cli sh -c "./scripts/07-queryReadAllCCfileOrg2.sh"
-
-read -p "Press any key to finish ..."
+echo "Done"
+# read -p "Press any key to finish ..."
