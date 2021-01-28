@@ -1,0 +1,48 @@
+{
+	"main_hash": "QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3",
+	"filename": "monimage.jpg",
+	"timestamp": 123456978656498463,
+	"mime-type": "image/jpeg",
+	"shards": [
+		{
+			"hash": "QmUZ4SwgdC5wwQtJTHAcxzqKEvCQd5LqdGTXjZo7uwAbbx",
+			"position": 0
+		},
+		{
+			"hash": "QmWhhURkteM3H5etCAgdHY5HKXUR4ZVgPq2dGYezNLqKxZ",
+			"position": 2
+		},
+		{
+			"hash": "QmQLyD3KbeavaVUMobkbMtaLjPTvLwTX9D8729Lc1RMBkY",
+			"position": 1
+		},
+		{
+			"hash": "QmRsw34b39aT8EcRcp6gLV3rpMQKkd3gh1Yr6Lc3ybWFmo",
+			"position": 3
+		},
+		{
+			"hash": "QmdD7WWYmgWMb92PC75eJsTyTGym5bPDVyg8tdD1q8v4Nk",
+			"position": 4
+		},
+		{
+			"hash": "QmfK1MvsxEFyTqVhM12XdxCN7YGS3YkWvXKnzPUYmGXEnu",
+			"position": 5
+		},
+		{
+			"hash": "QmVz9FwHdURjarMddivG22pJuVsjELFKq7sdjiGQ1ycBCx",
+			"position": 6
+		},
+		{
+			"hash": "QmVoKwoRQZFzCnTk2GK8EJte87ighNMPuT8N5cWEpBMgmi",
+			"position": 7
+		},
+		{
+			"hash": "QmPfC1Xi8kU7uTJ1Vif48YGsU2a28DsAiGFsNG1Go7Niuj",
+			"position": 9
+		},
+		{
+			"hash": "QmRiicsQ6zfYd6AE7nJGKmjGYxfrUKE4nzvTfTmnn2pDdA",
+			"position": 8
+		}
+	]
+}
