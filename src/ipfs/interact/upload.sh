@@ -19,6 +19,14 @@ CHUNK_SIZE="100k"
 CONTAINER="admin_ipfs"
 CONTAINER_CLUSTER="admin_cluster"
 
+# timestamp() {
+#   date +"%T" # current time
+# }
+
+# get_mime_type(val) {
+# 	file --mime-type val 
+# }
+
 # Check if correct number of argument
 if [ $# -ne 1 ]
 then
@@ -59,7 +67,7 @@ docker exec -it $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
 docker cp $CONTAINER:/home/shards.txt ./shards.txt
 docker exec -it $CONTAINER rm /home/shards.txt
 
-# add all shards to ipfs + craeting the list
+# add all shards to ipfs + creating the list
 > ./list.txt
 CNT=0
 WAITING="Adding files to IPFS"
@@ -70,7 +78,7 @@ do
 	CNT=$(($CNT+1))
 	echo -ne $WAITING'\r'
 	WAITING+='.'
-done < "file.txt"
+done < "shards.txt"
 echo -ne "\n"
 echo "Uploaded"
 
