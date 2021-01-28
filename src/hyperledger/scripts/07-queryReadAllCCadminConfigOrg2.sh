@@ -24,4 +24,4 @@ CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
 #read -p "Press any key to continue (query ReadAll) ..."
-peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME #2>/dev/null
+peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME 2>/dev/null

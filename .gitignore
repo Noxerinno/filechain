@@ -5,16 +5,6 @@ certsICA/
 msp/
 crypto-config/
 channel-artifacts/
-<<<<<<< HEAD
-src/hyperledger/log.txt
-src/hyperledger/channel1.block
-src/hyperledger/adminConfig-contract.tar.gz
-src/hyperledger/file-contract.tar.gz
-src/hyperledger/test.txt
-src/hyperledger/text.txt
-src/hyperledger/channel-artifacts/*
-src/hyperledger/crypto-config/*
-=======
 src/hyperLedger/log.txt
 src/hyperLedger/channel1.block
 src/hyperLedger/file-contract.tar.gz
@@ -25,4 +15,3 @@ src/hyperLedger/chaincodes/chaincode_example02/contract-tutorial
 src/hyperLedger/chaincodes/chaincode_example02/vendor
 src/hyperLedger/channel-artifacts/*
 src/hyperLedger/crypto-config/*
->>>>>>> def0c63b97763c79ca1ff285f3d9735c9e8484c6

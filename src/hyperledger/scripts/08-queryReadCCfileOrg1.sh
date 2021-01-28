@@ -31,4 +31,4 @@ if [ "$#" -ne 1 ]; then
 fi
 
 #read -p "Press any key to continue (query Read) ..."
-peer chaincode query -n file-contract -c '{"Args":["Read","'$1'"]}' -C $CHANNEL_NAME #2>/dev/null
+peer chaincode query -n file-contract -c '{"Args":["Read","'$1'"]}' -C $CHANNEL_NAME 2>/dev/null
