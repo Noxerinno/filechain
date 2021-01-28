@@ -16,12 +16,11 @@
 
 # ==============================================================================
 CONTAINER="admin_ipfs"
-
 SORTED=$(jq '.shards|=sort_by(.position)' my.json)
 # Check if correct number of arguments
 if [ $# -ne 3 ]
 then
-    echo "Expect three arguments which is a string corresponding to the file json object, the filename and the destination folder"
+    echo "Expect two arguments which is a string corresponding to the file json object, the filename and the destination folder"
     exit 
 fi
 

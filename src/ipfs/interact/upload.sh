@@ -19,6 +19,15 @@ CHUNK_SIZE="100k"
 CONTAINER="admin_ipfs"
 CONTAINER_CLUSTER="admin_cluster"
 
+
+# timestamp() {
+#   date +"%T" # current time
+# }
+
+# get_mime_type(val) {
+# 	file --mime-type val 
+# }
+
 # Check if correct number of argument
 if [ $# -ne 1 ]
 then
@@ -39,6 +48,7 @@ FILENAME=$(basename $1)
 echo "$FILENAME"
 
 # get the main hash for the file
+<<<<<<< HEAD
 PREFIX=$(docker exec $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
 echo $PREFIX
 
@@ -51,15 +61,37 @@ fi
 
 # cleaning the folder and create the shards
 docker exec $CONTAINER sh -c "cd /home/chunks;split -b $CHUNK_SIZE /home/$FILENAME $PREFIX"
+=======
+PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
+echo $PREFIX
+
+# check if chunks folder already exists
+docker exec -it $CONTAINER test -d /home/chunks
+if [ $? -ne 0 ]
+then
+	docker exec -it $CONTAINER mkdir /home/chunks/
+fi
+
+# cleaning the folder and create the shards
+docker exec -it $CONTAINER sh -c "cd /home/chunks;split -b $CHUNK_SIZE /home/$FILENAME $PREFIX"
+>>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240
 echo "File splitted in chunks"
 
 # get all hash from the shards
 > ./shards.txt
+<<<<<<< HEAD
 docker exec $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
 docker cp $CONTAINER:/home/shards.txt ./shards.txt
 docker exec $CONTAINER rm /home/shards.txt
 
 # add all shards to ipfs + craeting the list
+=======
+docker exec -it $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
+docker cp $CONTAINER:/home/shards.txt ./shards.txt
+docker exec -it $CONTAINER rm /home/shards.txt
+
+# add all shards to ipfs + creating the list
+>>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240
 > ./list.txt
 CNT=0
 WAITING="Adding files to IPFS"
@@ -86,4 +118,8 @@ done < "list.txt"
 echo -ne '\n'
 echo "Synced"
 # Cleaning unsed files
+<<<<<<< HEAD
 docker exec $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
+=======
+docker exec -it $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
+>>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240

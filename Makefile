@@ -14,21 +14,25 @@
 
 # ==============================================================================
 
-
+ROOT = $(shell pwd)
 
 all : clean
-	# docker-compose up -d 
-	# python3 init.py
-	chmod u+x ./init.sh
-	./init.sh
+	@ cd $(ROOT)/src/hyperledger; $(ROOT)/src/hyperledger/start.sh 
+	@ cd $(ROOT)/src/ipfs/admin; $(ROOT)/src/ipfs/admin/init.sh
+	@ cd $(ROOT)/src/ipfs/client; $(ROOT)/src/ipfs/client/init.sh
 
 restart :
-	docker-compose stop
-	docker-compose start
+	@ docker-compose stop
+	@ docker-compose start
 
 clean :
-	docker-compose down
-	# docker volume rm client_ipfs_data
-	# docker volume rm client_ipfs-cluster_data 
-	sudo rm -rf ./data/
-	docker system prune
+	@ chmod u+x $(ROOT)/src/executable.sh
+	@ $(ROOT)/src/executable.sh
+	@ cd $(ROOT)/src/hyperledger/; sudo $(ROOT)/src/hyperledger/reset.sh 
+	@ #docker-compose down -v 1>/dev/null 2>/dev/null
+	@ sudo rm -rdf $(ROOT)/src/ipfs/*/data/
+	@ docker container prune
+
+mrproper : clean
+	@ docker system prune 
+	@ docker image rm ipfs/goipfs ipfs/ipfs-cluster ipfs-setup ipfs-cluster-setup
