@@ -32,4 +32,4 @@ clean :
 	@ # docker container stop $(docker ps -aq) 2>/dev/null
 	@ sudo rm -rdf ./data/
 	@ docker system prune
-	@ # docker image rm ipfs-setup 1>/dev/null
+	@ clear

@@ -28,7 +28,6 @@ services:
     image: ipfs-setup:latest
     volumes:
       - ./ipfs-setup-image/assets/:/scripts/
-      - ./data/config-files/:/swarmkey/key/
       - ./data/config-files/:/jq/config-files/
       - ./data/ipfs-cluster/:/jq/ipfs-files/
     command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'

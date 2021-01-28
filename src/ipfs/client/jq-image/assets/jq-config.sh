@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,22 +15,12 @@
 # limitations under the License.
 
 # ==============================================================================
-
-
-
-all : clean
-	# docker-compose up -d 
-	# python3 init.py
-	chmod u+x ./init.sh
-	./init.sh
-
-restart :
-	docker-compose stop
-	docker-compose start
-
-clean :
-	docker-compose down
-	# docker volume rm client_ipfs_data
-	# docker volume rm client_ipfs-cluster_data 
-	sudo rm -rf ./data/
-	docker system prune
+echo "in jq"
+echo $1
+echo $1 | /jq/jq '.[1]'
+echo $1 | /jq/jq '.[1]' > /files/config
+SWARMKEY=$(echo $1 | /jq/jq '.[0].SwarmKey')
+SWARMKEY=${SWARMKEY#"\""}
+SWARMKEY=${SWARMKEY%"\""}
+# SWARMKEY=${SWARMKEY//'\n'/'\\n'}
+echo $SWARMKEY > /files/swarm.key
