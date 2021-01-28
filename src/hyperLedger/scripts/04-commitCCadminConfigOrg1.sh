@@ -17,13 +17,16 @@
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com.crt.pem
 CORE_PEER_LOCALMSPID="Org1MSP"
 # CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com.crt.pem
+
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
 CORE_PEER_ADDRESS=${IP_PEER_ORG1}:7051
 CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-#read -p "Press any key to continue (query Read) ..."
-#peer chaincode query -n simple-contract -c '{"Args":["Read", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv"]}' -C $CHANNEL_NAME
-#sleep 10
-peer chaincode query -n simple-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME 2>/dev/null
+
+
+#read -p "Press any key to continue (check commit readiness) ..."
+peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name "adminConfig-contract" --version 1.0 --cafile $ORDERER_CA --output json --sequence 1 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" 2>/dev/null
+#read -p "Press any key to continue (commit chainecode) ..."
+peer lifecycle chaincode commit -o orderer0.org1.example.com:7050 --channelID $CHANNEL_NAME --name "adminConfig-contract" --version 1.0 --sequence 1 --cafile $ORDERER_CA --peerAddresses ${IP_PEER_ORG1}:7051 --peerAddresses ${IP_PEER_ORG2}:8051 --signature-policy "OR('Org1MSP.member','Org2MSP.member')" 2>/dev/null
