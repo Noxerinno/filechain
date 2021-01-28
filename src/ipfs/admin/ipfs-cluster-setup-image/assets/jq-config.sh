@@ -15,7 +15,8 @@
 # limitations under the License.
 
 # ==============================================================================
-
+echo "In jq file script"
+echo $SWARMKEY
 
 /jq/jq -n '{"IpfsId": "","AdminIpAddress": "","SwarmKey":"","ClusterSecret": "","ClusterPeerId": ""}' > /jq/config-files/config
 /jq/jq --arg IPADDR "$IPADDR" '.AdminIpAddress=$IPADDR' /jq/config-files/config > tmp && mv tmp /jq/config-files/config

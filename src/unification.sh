@@ -17,5 +17,3 @@
 # ==============================================================================
 
 echo $CLUSTER_SECRET
-
-#docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh '${json1}

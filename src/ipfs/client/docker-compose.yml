@@ -57,11 +57,17 @@ services:
       
     networks:
       - outside
-    # ports:
-      # - "127.0.0.1:9194:9094"
-      # - "9195:9095"
-      # - "9196:9096"
 
+  jq-image:
+    container_name: jq-image
+    build:
+      context: ./jq-image/
+    image: jq-image:latest
+    volumes:
+      - ./jq-image/assets/:/scripts/
+      - ./data/files/:/files/
+    command: sh -c 'chmod u+x -R /scripts/ && /scripts/iwillsurvive.sh'
+    restart: always
 # volumes: 
 #   ipfs_data: {}
 #   ipfs-cluster_data: {}

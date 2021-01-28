@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Copyright [2020] [Frantz Darbon, Gilles Seghaier, Johan Tombre, Frédéric Vaz]
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,25 +16,8 @@
 
 # ==============================================================================
 
-ROOT = $(shell pwd)
 
-all : clean
-	@ cd $(ROOT)/src/hyperledger; $(ROOT)/src/hyperledger/start.sh 
-	@ cd $(ROOT)/src/ipfs/admin; $(ROOT)/src/ipfs/admin/init.sh
-	@ cd $(ROOT)/src/ipfs/client; $(ROOT)/src/ipfs/client/init.sh
-
-restart :
-	@ docker-compose stop
-	@ docker-compose start
-
-clean :
-	@ chmod u+x $(ROOT)/src/executable.sh
-	@ $(ROOT)/src/executable.sh
-	@ cd $(ROOT)/src/hyperledger/; sudo $(ROOT)/src/hyperledger/reset.sh 
-	@ #docker-compose down -v 1>/dev/null 2>/dev/null
-	@ sudo rm -rdf $(ROOT)/src/ipfs/*/data/
-	@ docker container prune
-
-mrproper : clean
-	@ docker system prune 
-	@ docker image rm ipfs/goipfs ipfs/ipfs-cluster ipfs-setup ipfs-cluster-setup
+while true
+do
+    sleep 1
+done

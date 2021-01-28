@@ -29,7 +29,7 @@ case "${unameOut}" in
     *)          docker="docker"
 esac
 
-echo "CC c'est le script"
+pwd 
 docker-compose -f docker-compose-ca.yaml up -d ca.root.example.com
 sleep 1
 export IP_ROOT=$(docker inspect -f '{.
@@ -117,5 +117,5 @@ docker exec -it cli sh -c "./scripts/04-commitCCfileOrg1.sh"
 #echo "Querying CC file from Org2"
 #sleep 5
 #docker exec -it cli sh -c "./scripts/07-queryReadAllCCfileOrg2.sh"
-
-read -p "Press any key to finish ..."
+echo "Done"
+# read -p "Press any key to finish ..."
