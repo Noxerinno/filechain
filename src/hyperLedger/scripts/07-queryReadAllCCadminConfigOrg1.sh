@@ -23,7 +23,5 @@ CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-#read -p "Press any key to continue (query Read) ..."
-#peer chaincode query -n adminConfig-contract -c '{"Args":["Read", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv"]}' -C $CHANNEL_NAME
-#sleep 10
+#read -p "Press any key to continue (query ReadAll) ..."
 peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME #2>/dev/null
