@@ -16,12 +16,3 @@
 #!/bin/bash
 
 docker start cli peer0.org1.example.com peer0.org2.example.com orderer0.org1.example.com  orderer0.org2.example.com chaincode
-sleep 5
-export IP_PEER_ORG1=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org1.example.com)
-export IP_PEER_ORG2=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org2.example.com)
-docker exec -it cli sh -c "export IP_PEER_ORG1="${IP_PEER_ORG1}
-docker exec -it cli sh -c "export IP_PEER_ORG2="${IP_PEER_ORG2}
-json1="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
-json2="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
-docker exec -it cli sh -c './scripts/05-invokeCreateCCadminConfigOrg1.sh '${json1}
-docker exec -it cli sh -c "./scripts/07-queryReadAllCCadminConfigOrg2.sh"
