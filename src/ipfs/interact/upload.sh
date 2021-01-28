@@ -15,17 +15,15 @@
 # limitations under the License.
 
 # ==============================================================================
+
 CHUNK_SIZE="100k"
 CONTAINER="admin_ipfs"
 CONTAINER_CLUSTER="admin_cluster"
+CONTAINER_JQ="jq-image"
 
 # timestamp() {
 #   date +"%T" # current time
-# }
-
-# get_mime_type(val) {
-# 	file --mime-type val 
-# }
+# }*
 
 # Check if correct number of argument
 if [ $# -ne 1 ]
@@ -45,6 +43,12 @@ fi
 docker cp $1 $CONTAINER:/home/
 FILENAME=$(basename $1)
 echo "$FILENAME"
+
+# Getting the file type
+TYPE=$(file --mime-type $1 | cut -d ":" -f2 | cut -c 2-)
+
+# Getting the timestamp
+TIMESTAMP=$(date +"%T")
 
 # get the main hash for the file
 PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
@@ -67,6 +71,15 @@ docker exec -it $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
 docker cp $CONTAINER:/home/shards.txt ./shards.txt
 docker exec -it $CONTAINER rm /home/shards.txt
 
+#Creating the JSon file
+jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --arg TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
+	"main_hash": $PREFIX,
+	"filename": $FILENAME,
+	"timestamp": $TIMESTAMP,
+	"mime-type": $TYPE,
+	"shards": []
+}' > ./shards.json
+
 # add all shards to ipfs + creating the list
 > ./list.txt
 CNT=0
@@ -76,9 +89,16 @@ do
 	HASH=$(docker exec $CONTAINER sh -c "ipfs add -r -Q --pin=false /home/chunks/$line")
 	echo "$HASH-$CNT" >> ./list.txt
 	CNT=$(($CNT+1))
+
+	# Adding shards' info to shard list
+	jq --arg HASH "$HASH" --arg CNT "$CNT" -n '.data.shards += [{
+		"hash": $HASH,
+		"position": $CNT
+	}]' > ./shards.json
+
 	echo -ne $WAITING'\r'
 	WAITING+='.'
-done < "shards.txt"
+done # < "shards.txt"
 echo -ne "\n"
 echo "Uploaded"
 
