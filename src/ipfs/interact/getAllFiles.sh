@@ -16,5 +16,5 @@
 
 # ==============================================================================
 
-FILES=$(docker exec -it cli sh -c './scripts/07-queryReadAllCCfileOrg1.sh')
+FILES=$(docker exec cli sh -c './scripts/07-queryReadAllCCfileOrg1.sh')
 echo $FILES

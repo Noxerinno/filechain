@@ -1,10 +1,15 @@
 <template>
-<div class="flex flex-row bg-gray-50">
-	<div class="">
-		<Sidebar />
-	</div>
-	<router-view />
-</div>	
+<div class="absolute overflow-hidden w-full">
+	<div class="flex flex-row bg-gray-50">
+		<div class="ml-96 w-full h-screen">
+			<router-view />
+		</div>
+		<div class="fixed">
+			<Sidebar />
+		</div>
+	</div>	
+</div>
+
 </template>
 
 <script>

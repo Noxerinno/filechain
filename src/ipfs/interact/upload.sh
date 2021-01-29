@@ -21,15 +21,14 @@ CONTAINER="admin_ipfs"
 CONTAINER_CLUSTER="admin_cluster"
 CONTAINER_JQ="jq-image"
 
-
 # timestamp() {
 #   date +"%T" # current time
 # }*
 
 # Check if correct number of argument
-if [ $# -ne 1 ]
+if [ $# -ne 2 ]
 then
-    echo "Only expect one argument which is the path to the file"
+    echo "Only expect two arguments which is the path to the file and the filename"
     exit 
 fi
 
@@ -52,9 +51,7 @@ echo $TYPE
 TIMESTAMP=$(date +%s)
 echo $TIMESTAMP
 # get the main hash for the file
-<<<<<<< HEAD
-<<<<<<< HEAD
-PREFIX=$(docker exec $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
+PREFIX=$(docker exec $CONTAINER ipfs add --only-hash -Q /home/$FILENAME | tr -d '\r')
 echo $PREFIX
 
 # check if chunks folder already exists
@@ -66,42 +63,22 @@ fi
 
 # cleaning the folder and create the shards
 docker exec $CONTAINER sh -c "cd /home/chunks;split -b $CHUNK_SIZE /home/$FILENAME $PREFIX"
-=======
-PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
-=======
-PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME | tr -d '\r')
->>>>>>> 0571721cd881e6350e69b30ac770f959962470f9
-echo $PREFIX
-
-# check if chunks folder already exists
-docker exec -it $CONTAINER test -d /home/chunks
-if [ $? -ne 0 ]
-then
-	docker exec -it $CONTAINER mkdir /home/chunks/
-fi
-
-# cleaning the folder and create the shards
-docker exec -it $CONTAINER sh -c "cd /home/chunks;split -b $CHUNK_SIZE /home/$FILENAME $PREFIX"
->>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240
 echo "File splitted in chunks"
 
 # get all hash from the shards
 > ./shards.txt
-
-# add all shards to ipfs + craeting the list
-docker exec -it $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
+docker exec $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
 docker cp $CONTAINER:/home/shards.txt ./shards.txt
-docker exec -it $CONTAINER rm /home/shards.txt
+docker exec $CONTAINER rm /home/shards.txt
 
 #Creating the JSon file
-jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --argjson TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
+jq --arg PREFIX "$PREFIX" --arg FILENAME "$2" --argjson TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
 	"main_hash": $PREFIX,
 	"filename": $FILENAME,
 	"timestamp": $TIMESTAMP,
 	"mime-type": $TYPE,
 	"shards": []
 }' > shards.json
-
 # add all shards to ipfs + creating the list
 > ./list.txt
 CNT=0
@@ -129,7 +106,7 @@ JSON=${JSON//\"/\\\\\\\"}
 # JSON=${JSON//$[\n\t\r]/}
 JSON=$(echo "$JSON" | tr -d '\n' | tr -d '\r' | tr -d '\t' | tr -d ' ')
 echo "$JSON"
-docker exec -it cli sh -c './scripts/05-invokeCreateCCfileOrg1.sh "'${JSON}'"'
+docker exec cli sh -c './scripts/05-invokeCreateCCfileOrg1.sh "'${JSON}'"'
 
 # pin all shards using IPFS Cluster
 WAITING2="Pinning files"
@@ -143,4 +120,7 @@ done < "list.txt"
 echo -ne '\n'
 echo "Synced"
 # Cleaning unsed files
-docker exec -it $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
+docker exec $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
+rm shards.json
+rm shards.txt
+rm list.txt

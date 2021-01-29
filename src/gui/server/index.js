@@ -35,6 +35,18 @@ app.get("/api/get/path", (req, res) => {
 	res.send({path: db.path})
 })
 
+// get all files metadata
+app.get("/api/get/files-metadata", (req, res) => {
+	try {
+		const result = execSync("bash ../../ipfs/interact/getAllFiles.sh");
+		console.log("Done with file :" + result.toString());
+		let files = JSON.parse(result.toString());
+		res.send({files: files})
+	} catch (e) {
+		console.log(`error: ${e.message}`);
+	}
+})
+
 // get ipfs data
 app.get("/api/get/ipfs-data", async (req, res) => {
 	var response = {};
@@ -66,9 +78,11 @@ function uploadFunction(req) {
 		var uploaded = 0;
 		for (const file of req.files) {
 			// io.sockets.emit("PROGRESS", {cnt: 1});
+			console.log(file);
 			try {
-				const result = execSync("cd ../../ipfs/interact;bash upload.sh ../../gui/server/tmp/" + file.filename);
+				const result = execSync("cd ../../ipfs/interact;bash upload.sh ../../gui/server/tmp/" + file.filename + " " + file.originalname,);
 				uploaded = uploaded + 1;
+				fs.unlinkSync('./tmp/' + file.filename);
 				console.log("Done with file :" + result.toString());
 			} catch (e) {
 				console.log(`error: ${e.message}`);
@@ -80,8 +94,24 @@ function uploadFunction(req) {
 // upload file to server
 app.post("/api/upload", upload.array('files', 10), async function(req, res) {
 	await uploadFunction(req).then((data) => {
-		return res.json({content: data});
+		setTimeout(() => {
+			return res.json({content: data});
+		}, 3000)
 	});
+})
+
+// upload file to server
+app.post("/api/download", async function(req, res) {
+	try {
+		console.log(req.body);
+		let rawdata = fs.readFileSync('data/db.json');
+		let db = JSON.parse(rawdata);
+		const result = execSync("cd ../../ipfs/interact;bash download.sh '" + JSON.stringify(req.body) + "' '" + req.body.filename + "' " + db.path);
+		console.log(result)
+		res.json({response: true});
+	} catch (e) {
+		console.log(`error: ${e.message}`);
+	}
 })
 
 //submit path

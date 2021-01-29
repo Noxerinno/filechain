@@ -21,15 +21,15 @@ SORTED=$(echo "$1" | jq '.shards|=sort_by(.position)')
 # Check if correct number of arguments
 if [ $# -ne 3 ]
 then
-    echo "Expect three arguments which is a string corresponding to the file json object, the filename and the destination folder"
+    echo "Expect three arguments which is a string corresponding to the json object, the filename and the destination folder"
     exit 
 fi
 
 # Check if retrieve folder "retrieve" exist in docker container
-docker exec -it $CONTAINER test -d /home/retrieve
+docker exec $CONTAINER test -d /home/retrieve
 if [ $? -ne 0 ]
 then
-	docker exec -it $CONTAINER mkdir /home/retrieve/
+	docker exec $CONTAINER mkdir /home/retrieve/
 fi
 
 # get each shards from IPFS
@@ -43,10 +43,10 @@ for shard in $(echo "${SORTED}" | jq -c '.shards[]'); do
     PROCESSING+='.'
 done
 
-docker exec -it $CONTAINER sh -c "cd /home/retrieve;cat$QUERY > ../$2"
+docker exec $CONTAINER sh -c "cd /home/retrieve;cat$QUERY > ../$2"
 
 # copy the file to local machine
 docker cp $CONTAINER:/home/$2 $3
 
 # cleaning files
-docker exec -it $CONTAINER sh -c "rm /home/retrieve/*; rm /home/$2"
+docker exec $CONTAINER sh -c "rm /home/retrieve/*; rm /home/$2"

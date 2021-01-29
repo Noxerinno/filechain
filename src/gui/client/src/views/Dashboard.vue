@@ -1,5 +1,5 @@
 <template>
-<section v-if="mounted" class="w-screen">
+<section v-if="mounted" class="">
 	<div v-if="this.data" class="grid m-4 xl:m-10">
 		<div class="bg-white shadow-lg rounded px-8 pt-6 pb-8 mx-auto xl:mx-24 mt-14 flex flex-col">
 			<div class="flex flex-col align-center">
