@@ -21,7 +21,7 @@ GO_TAGS ?=
 
 
 all : clean
-	
+
 build :
 	./build.sh
 
