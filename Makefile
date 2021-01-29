@@ -21,6 +21,7 @@ all : clean
 	@ cd $(ROOT)/src/ipfs/admin; $(ROOT)/src/ipfs/admin/init.sh
 	@ cd $(ROOT)/src/ipfs/client; $(ROOT)/src/ipfs/client/init.sh
 
+
 restart :
 	@ docker-compose stop
 	@ docker-compose start
@@ -36,3 +37,7 @@ clean :
 mrproper : clean
 	@ docker system prune 
 	@ docker image rm ipfs/goipfs ipfs/ipfs-cluster ipfs-setup ipfs-cluster-setup
+
+gui : all
+	@ cd $(ROOT)/src/gui/server; npm install
+	@ cd $(ROOT)/src/gui/server; npm run dev

@@ -7,7 +7,7 @@
 					Settings
 				</div>
 				<div class="text-sm text-gray-600 mb-5">
-					All files downloaded will be stored in the folder selected here. Don't forget to save inorder to apply the changes.
+					All files downloaded will be stored in the folder selected here. Don't forget to save in order to apply the changes.
 				</div>
 				<div class="flex w-full justify-between">
 					<div class="flex flex-col w-4/5 mr-7">
