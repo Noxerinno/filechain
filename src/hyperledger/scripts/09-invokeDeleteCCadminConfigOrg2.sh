@@ -14,7 +14,7 @@
 
 # ==============================================================================
 
-# 2 arguments are required in the following order : Key and the json containing all the info about the file
+# 1 arguments is required: Key
 
 ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/orderers/orderer0.org1.example.com/msp/tlscacerts/tlsca.org1.example.com.crt.pem
 CORE_PEER_LOCALMSPID="Org2MSP"
@@ -26,14 +26,10 @@ CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org2.example.com/ca/ca-cert.pem
 
-if [ "$#" -ne 2 ]; then
-    echo "Illegal number of parameters. 2 arguments required."
+if [ "$#" -ne 1 ]; then
+    echo "Illegal number of parameters. 1 argument required."
     exit 1
 fi
 
-Key=$1
-json=$2
-
-
-#read -p "Press any key to continue (invoke Update) ..."
-peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n file-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG2_CA -c '{"Args":["Update", "'${Key}'", "'${json}'"]}' #2>/dev/null
+#read -p "Press any key to continue (invoke Delete) ..."
+peer chaincode invoke -o orderer0.org1.example.com:7050 --cafile $ORDERER_CA -C $CHANNEL_NAME -n adminConfig-contract --peerAddresses $CORE_PEER_ADDRESS --cafile $ORG2_CA -c '{"Args":["Delete", "'$1'"]}' #2>/dev/null

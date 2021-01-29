@@ -18,17 +18,10 @@ ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config
 CORE_PEER_LOCALMSPID="Org1MSP"
 # CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com.crt.pem
 CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/filechain/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-CORE_PEER_ADDRESS=${IP_PEER_ORG1}:7051
+CORE_PEER_ADDRESS=peer0.org1.example.com:7051
 CHANNEL_NAME=channel1
 CORE_PEER_TLS_ENABLED=false
 ORDERER_SYSCHAN_ID=syschain
 
-<<<<<<< HEAD:src/hyperledger/scripts/07-queryReadAllCCadminConfigOrg1.sh
-#read -p "Press any key to continue (query Read) ..."
-#peer chaincode query -n adminConfig-contract -c '{"Args":["Read", "12D3KooWSEb9pcJZCrYqfFeJVJ8uhn6KPXz4fgnNUbz8w5WUMrTv"]}' -C $CHANNEL_NAME
-#sleep 10
-peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME 2>/dev/null
-=======
 #read -p "Press any key to continue (query ReadAll) ..."
-peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME #2>/dev/null
->>>>>>> 11cc6313b7e21c41190e0cc4cf4b1e3d2d851629:src/hyperLedger/scripts/07-queryReadAllCCadminConfigOrg1.sh
+peer chaincode query -n adminConfig-contract -c '{"Args":["ReadAll"]}' -C $CHANNEL_NAME 2>/dev/null

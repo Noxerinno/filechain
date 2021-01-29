@@ -15,18 +15,16 @@
 # limitations under the License.
 
 # ==============================================================================
+
 CHUNK_SIZE="100k"
 CONTAINER="admin_ipfs"
 CONTAINER_CLUSTER="admin_cluster"
+CONTAINER_JQ="jq-image"
 
 
 # timestamp() {
 #   date +"%T" # current time
-# }
-
-# get_mime_type(val) {
-# 	file --mime-type val 
-# }
+# }*
 
 # Check if correct number of argument
 if [ $# -ne 1 ]
@@ -47,7 +45,14 @@ docker cp $1 $CONTAINER:/home/
 FILENAME=$(basename $1)
 echo "$FILENAME"
 
+# Getting the file type
+TYPE=$(file --mime-type $1 | cut -d ":" -f2 | cut -c 2-)
+echo $TYPE
+# Getting the timestamp
+TIMESTAMP=$(date +%s)
+echo $TIMESTAMP
 # get the main hash for the file
+<<<<<<< HEAD
 <<<<<<< HEAD
 PREFIX=$(docker exec $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
 echo $PREFIX
@@ -63,6 +68,9 @@ fi
 docker exec $CONTAINER sh -c "cd /home/chunks;split -b $CHUNK_SIZE /home/$FILENAME $PREFIX"
 =======
 PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
+=======
+PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME | tr -d '\r')
+>>>>>>> 0571721cd881e6350e69b30ac770f959962470f9
 echo $PREFIX
 
 # check if chunks folder already exists
@@ -79,19 +87,22 @@ echo "File splitted in chunks"
 
 # get all hash from the shards
 > ./shards.txt
-<<<<<<< HEAD
-docker exec $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
-docker cp $CONTAINER:/home/shards.txt ./shards.txt
-docker exec $CONTAINER rm /home/shards.txt
 
 # add all shards to ipfs + craeting the list
-=======
 docker exec -it $CONTAINER sh -c "ls /home/chunks > /home/shards.txt"
 docker cp $CONTAINER:/home/shards.txt ./shards.txt
 docker exec -it $CONTAINER rm /home/shards.txt
 
+#Creating the JSon file
+jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --argjson TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
+	"main_hash": $PREFIX,
+	"filename": $FILENAME,
+	"timestamp": $TIMESTAMP,
+	"mime-type": $TYPE,
+	"shards": []
+}' > shards.json
+
 # add all shards to ipfs + creating the list
->>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240
 > ./list.txt
 CNT=0
 WAITING="Adding files to IPFS"
@@ -100,11 +111,25 @@ do
 	HASH=$(docker exec $CONTAINER sh -c "ipfs add -r -Q --pin=false /home/chunks/$line")
 	echo "$HASH-$CNT" >> ./list.txt
 	CNT=$(($CNT+1))
+
+	# Adding shards' info to shard list
+	jq --arg HASH "$HASH" --argjson CNT "$CNT" '.shards |= . + [{
+		"hash": $HASH,
+		"position": $CNT
+	}]' shards.json > tmp.json && mv tmp.json shards.json
 	echo -ne $WAITING'\r'
 	WAITING+='.'
 done < "shards.txt"
 echo -ne "\n"
 echo "Uploaded"
+
+echo "Adding metadata to Hyperledger"
+JSON=$(cat shards.json)
+JSON=${JSON//\"/\\\\\\\"}
+# JSON=${JSON//$[\n\t\r]/}
+JSON=$(echo "$JSON" | tr -d '\n' | tr -d '\r' | tr -d '\t' | tr -d ' ')
+echo "$JSON"
+docker exec -it cli sh -c './scripts/05-invokeCreateCCfileOrg1.sh "'${JSON}'"'
 
 # pin all shards using IPFS Cluster
 WAITING2="Pinning files"
@@ -118,8 +143,4 @@ done < "list.txt"
 echo -ne '\n'
 echo "Synced"
 # Cleaning unsed files
-<<<<<<< HEAD
-docker exec $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
-=======
 docker exec -it $CONTAINER sh -c "rm /home/$FILENAME;rm /home/chunks/*"
->>>>>>> 6ab39dd533feed8303c483a3c2e03b4a0a1a4240
