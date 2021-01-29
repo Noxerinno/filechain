@@ -48,10 +48,10 @@ echo "$FILENAME"
 TYPE=$(file --mime-type $1 | cut -d ":" -f2 | cut -c 2-)
 echo $TYPE
 # Getting the timestamp
-TIMESTAMP=$(date +"%T")
+TIMESTAMP=$(date +%s)
 echo $TIMESTAMP
 # get the main hash for the file
-PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME)
+PREFIX=$(docker exec -it $CONTAINER ipfs add --only-hash -Q /home/$FILENAME | tr -d '\r')
 echo $PREFIX
 
 # check if chunks folder already exists
@@ -72,7 +72,7 @@ docker cp $CONTAINER:/home/shards.txt ./shards.txt
 docker exec -it $CONTAINER rm /home/shards.txt
 
 #Creating the JSon file
-jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --arg TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
+jq --arg PREFIX "$PREFIX" --arg FILENAME "$FILENAME" --argjson TIMESTAMP "$TIMESTAMP" --arg TYPE "$TYPE" -n '{
 	"main_hash": $PREFIX,
 	"filename": $FILENAME,
 	"timestamp": $TIMESTAMP,
@@ -99,6 +99,14 @@ do
 done < "shards.txt"
 echo -ne "\n"
 echo "Uploaded"
+
+echo "Adding metadata to Hyperledger"
+JSON=$(cat shards.json)
+JSON=${JSON//\"/\\\\\\\"}
+# JSON=${JSON//$[\n\t\r]/}
+JSON=$(echo "$JSON" | tr -d '\n' | tr -d '\r' | tr -d '\t' | tr -d ' ')
+echo "$JSON"
+docker exec -it cli sh -c './scripts/05-invokeCreateCCfileOrg1.sh "'${JSON}'"'
 
 # pin all shards using IPFS Cluster
 WAITING2="Pinning files"
