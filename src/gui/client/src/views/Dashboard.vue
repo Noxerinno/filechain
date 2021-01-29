@@ -90,7 +90,6 @@ export default {
 	},
 	async mounted() {
 		await this.getIpfsData();
-		console.log(this.data);
 		this.polling = setInterval(() => {
 			this.getIpfsData();
 		}, 3000);

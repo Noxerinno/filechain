@@ -44,7 +44,6 @@ export default {
 	},
 	methods: {
 		async submitPath() {
-			console.log(this.path);
 			if(this.path == "") {
 				this.pathInfo = "Empty";
 				return
@@ -57,8 +56,6 @@ export default {
 			setTimeout(() => {
 				this.pathInfo = null;
 			}, 5000);
-			console.log(res.data);
-
 		})
 			
 		}
