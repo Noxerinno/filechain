@@ -29,17 +29,17 @@ case "${unameOut}" in
     *)          docker="docker"
 esac
 
-pwd 
+pwd
 docker-compose -f docker-compose-ca.yaml up -d ca.root.example.com
 sleep 1
 export IP_ROOT=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ca.root.example.com)
 echo ${IP_ROOT}
-sleep 10
+sleep 5
 docker-compose -f docker-compose-ca.yaml up -d ca-cli
-sleep 10
+sleep 5
 #read -p "Press any key to continue (createCAOrg1) ..."
 $docker exec -it ca-cli sh -c "./createCAOrg1.sh"
-sleep 10
+sleep 5
 #read -p "Press any key to continue (up ca.org1.example.com) ..."
 docker-compose -f docker-compose-ca.yaml up -d ca.org1.example.com
 sleep 1
@@ -47,10 +47,10 @@ export IP_ORG1=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddre
 echo ${IP_ORG1}
 #read -p "Press any key to continue (createCertsOrg1) ..."
 $docker exec -it ca-cli sh -c "./createCertsOrg1.sh ${IP_ORG1}"
-sleep 10
+sleep 5
 #read -p "Press any key to continue (createCAOrg2) ..."
 $docker exec -it ca-cli sh -c "./createCAOrg2.sh"
-sleep 10
+sleep 5
 #read -p "Press any key to continue (up ca.org2.example.com) ..."
 docker-compose -f docker-compose-ca.yaml up -d ca.org2.example.com
 sleep 1
@@ -58,33 +58,26 @@ export IP_ORG2=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddre
 echo ${IP_ORG2}
 #read -p "Press any key to continue (createCertsOrg2) ..."
 $docker exec -it ca-cli sh -c "./createCertsOrg2.sh ${IP_ORG2}"
-sleep 10
+sleep 5
 #read -p "Press any key to continue (generate-artifacts) ..."
 $docker exec -it ca-cli sh -c "./generate-artifacts.sh"
-sleep 10
+sleep 5
+
 #read -p "Press any key to continue ..."
-echo "starting peer0.org1"
-docker-compose up -d peer0.org1.example.com
-export IP_PEER_ORG1=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org1.example.com)
-echo "starting peer0.org2"
-docker-compose up -d peer0.org2.example.com
-export IP_PEER_ORG2=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' peer0.org2.example.com)
-echo "starting all containers"
-docker-compose up -d
-sleep 10
+echo "starting all containers cli orderer0 and chaincode"
+docker-compose -f docker-compose.yaml up -d orderer0.org1.example.com cli chaincode
+sleep 5
 echo "exec in cli"
 echo "Creation channel"
 $docker exec -it cli sh -c "./scripts/01-createchannel.sh"
-echo "Org1 joining channel"
-$docker exec -it cli sh -c "./scripts/02-joinOrg1.sh"
-echo "Org2 joining channel"
-$docker exec -it cli sh -c "./scripts/02-joinOrg2.sh"
-echo "Installing CC adminConfig Org1"
-docker exec -it cli sh -c "./scripts/03-installCCadminConfigOrg1.sh"
-echo "Installing CC adminConfig Org2"
-docker exec -it cli sh -c "./scripts/03-installCCadminConfigOrg2.sh"
-echo "Commiting CC adminConfig from Org1"
-docker exec -it cli sh -c "./scripts/04-commitCCadminConfigOrg1.sh"
+read -p "Press any key to continue ..."
+#Starting Admin(Org1)
+./start-admin.sh
+#Starting CLient(Org2)
+./start-client.sh
+#Commiting CC
+./commitCCall.sh
+
 #echo "Creating CC adminConfig from Org1"
 #json1="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"2\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
 #json2="{\\\\\\\"IpfsId\\\\\\\":\\\\\\\"1\\\\\\\",\\\\\\\"AdminIpAddress\\\\\\\":\\\\\\\"28\\\\\\\",\\\\\\\"SwarmKey\\\\\\\":\\\\\\\"3\\\\\\\",\\\\\\\"ClusterSecret\\\\\\\":\\\\\\\"4\\\\\\\",\\\\\\\"ClusterPeerId\\\\\\\":\\\\\\\"5\\\\\\\"}"
@@ -97,15 +90,6 @@ docker exec -it cli sh -c "./scripts/04-commitCCadminConfigOrg1.sh"
 #docker exec -it cli sh -c "./scripts/07-queryReadAllCCadminConfigOrg2.sh"
 
 
-echo "Installing CC file Org1"
-docker exec -it cli sh -c "./scripts/03-installCCfileOrg1.sh"
-#read -p "Press any key to finish ..."
-echo "Installing CC file Org2"
-docker exec -it cli sh -c "./scripts/03-installCCfileOrg2.sh"
-#read -p "Press any key to finish ..."
-echo "Commiting CC file from Org1"
-docker exec -it cli sh -c "./scripts/04-commitCCfileOrg1.sh"
-#read -p "Press any key to finish ..."
 #echo "Creating CC file from Org1"
 #json3="{\\\\\\\"main_hash\\\\\\\":\\\\\\\"QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3\\\\\\\",\\\\\\\"filename\\\\\\\":\\\\\\\"monimage.jpg\\\\\\\",\\\\\\\"timestamp\\\\\\\":123456978656498463,\\\\\\\"mime-type\\\\\\\":\\\\\\\"image/jpeg\\\\\\\",\\\\\\\"shards\\\\\\\":[{\\\\\\\"hash\\\\\\\":\\\\\\\"QmXrPn23q8yyQxTrhEwTy9pbBafE2V7VsEn49DywWDPy4e\\\\\\\",\\\\\\\"position\\\\\\\":0},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmaWTDDNwDHXh5zhgq8rHVhqYX9mZzbyuPRKqosFkxwYWn\\\\\\\",\\\\\\\"position\\\\\\\":2},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmcPJDCz2tdcRMehXRZMxyGABw7RChmMCHJxgdrAKdbGTm\\\\\\\",\\\\\\\"position\\\\\\\":1}]}"
 #json4="{\\\\\\\"main_hash\\\\\\\":\\\\\\\"QmUdQxj9mKZq2zgpKPEtHvx1gaV4vG2wBNLz3xuvoEM6r3\\\\\\\",\\\\\\\"filename\\\\\\\":\\\\\\\"monim age2.jpg\\\\\\\",\\\\\\\"timestamp\\\\\\\":123456978656498463,\\\\\\\"mime-type\\\\\\\":\\\\\\\"image/jpeg\\\\\\\",\\\\\\\"shards\\\\\\\":[{\\\\\\\"hash\\\\\\\":\\\\\\\"QmXrPn23q8yyQxTrhEwTy9pbBafE2V7VsEn49DywWDPy4e\\\\\\\",\\\\\\\"position\\\\\\\":0},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmaWTDDNwDHXh5zhgq8rHVhqYX9mZzbyuPRKqosFkxwYWn\\\\\\\",\\\\\\\"position\\\\\\\":2},{\\\\\\\"hash\\\\\\\":\\\\\\\"QmcPJDCz2tdcRMehXRZMxyGABw7RChmMCHJxgdrAKdbGTm\\\\\\\",\\\\\\\"position\\\\\\\":1}]}"
